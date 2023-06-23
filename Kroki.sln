@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "try", "try", "{9A3205C5-A0AC-478F-A637-E3F605A286E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Example", "try\Kroki.Example\Kroki.Example.csproj", "{4F8E7297-7E47-4DA3-B366-198EA89326AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{356B53F5-43A6-48E8-9088-4F6C27F486CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Generator", "src\Kroki.Generator\Kroki.Generator.csproj", "{B9F1957D-2DBE-4CCF-9BFC-3F17BA4D0EFE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Tests", "src\Kroki.Tests\Kroki.Tests.csproj", "{567DC161-D6E4-409F-96D1-F5E17F67B638}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Core", "src\Kroki.Core\Kroki.Core.csproj", "{59762EEC-53CE-4FFE-B705-6C205C46555C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4F8E7297-7E47-4DA3-B366-198EA89326AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F8E7297-7E47-4DA3-B366-198EA89326AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F8E7297-7E47-4DA3-B366-198EA89326AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F8E7297-7E47-4DA3-B366-198EA89326AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B9F1957D-2DBE-4CCF-9BFC-3F17BA4D0EFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B9F1957D-2DBE-4CCF-9BFC-3F17BA4D0EFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B9F1957D-2DBE-4CCF-9BFC-3F17BA4D0EFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B9F1957D-2DBE-4CCF-9BFC-3F17BA4D0EFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{567DC161-D6E4-409F-96D1-F5E17F67B638}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{567DC161-D6E4-409F-96D1-F5E17F67B638}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{567DC161-D6E4-409F-96D1-F5E17F67B638}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{567DC161-D6E4-409F-96D1-F5E17F67B638}.Release|Any CPU.Build.0 = Release|Any CPU
+		{59762EEC-53CE-4FFE-B705-6C205C46555C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59762EEC-53CE-4FFE-B705-6C205C46555C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59762EEC-53CE-4FFE-B705-6C205C46555C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59762EEC-53CE-4FFE-B705-6C205C46555C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4F8E7297-7E47-4DA3-B366-198EA89326AE} = {9A3205C5-A0AC-478F-A637-E3F605A286E5}
+		{B9F1957D-2DBE-4CCF-9BFC-3F17BA4D0EFE} = {356B53F5-43A6-48E8-9088-4F6C27F486CB}
+		{567DC161-D6E4-409F-96D1-F5E17F67B638} = {356B53F5-43A6-48E8-9088-4F6C27F486CB}
+		{59762EEC-53CE-4FFE-B705-6C205C46555C} = {356B53F5-43A6-48E8-9088-4F6C27F486CB}
+	EndGlobalSection
+EndGlobal
