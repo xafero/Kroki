@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Kroki.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
@@ -22,7 +23,7 @@ namespace Kroki.Generator
 
             try
             {
-                var namespaceName = context.Compilation?.AssemblyName ?? nameof(Kroki);
+                var rootSpace = context.Compilation.AssemblyName ?? nameof(Kroki);
 
                 var allPasFiles = context
                     .AdditionalFiles
@@ -35,18 +36,29 @@ namespace Kroki.Generator
                     if (sourceText == null)
                         continue;
 
-                    var single = Path.GetFileName(someFile.Path);
-                    var hintName = $"{single}.gen.cs";
+                    var simpleName = Path.GetFileName(someFile.Path);
+                    var hintName = $"{simpleName}.cs";
                     var delphiCode = sourceText.ToString();
 
                     var nowDate = DateTime.Now.ToString("s");
                     var genCode = new StringBuilder();
                     genCode.AppendLine();
-                    genCode.AppendLine("// Generated at " + nowDate);
-                    genCode.AppendLine("// " + delphiCode.Length + " characters?!");
+                    genCode.AppendLine($"// Generated at {nowDate}");
+                    genCode.AppendLine($"// Namespace: {rootSpace}");
+                    genCode.AppendLine();
+                    genCode.AppendLine($"// {delphiCode.Length} characters?!");
                     genCode.AppendLine();
 
-                    var genText = genCode.ToString();
+                    string processed;
+                    try
+                    {
+                        processed = DelphiParser.ParsePas(simpleName, sourceText);
+                    }
+                    catch (Exception parseEx)
+                    {
+                        processed = $"/* {parseEx} */";
+                    }
+                    var genText = genCode + processed + Environment.NewLine;
                     context.AddSource(hintName, SourceText.From(genText, Encoding.UTF8));
                 }
             }

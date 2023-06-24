@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Kroki.Generator\Kroki.Generator.csproj" />
+    <ProjectReference Include="..\..\src\Kroki.Generator\Kroki.Generator.csproj" />
   </ItemGroup>
 
 </Project>

@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="DGrok.Framework">
+    <Reference Include="DGrok.Framework" OutputItemType="Analyzer" PrivateAssets="all">
       <HintPath>..\..\lib\DGrok.Framework.dll</HintPath>
     </Reference>
   </ItemGroup>

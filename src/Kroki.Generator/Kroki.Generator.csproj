@@ -6,6 +6,7 @@
     <LangVersion>latest</LangVersion>
 
     <IsRoslynComponent>true</IsRoslynComponent>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
@@ -23,8 +24,9 @@
     <Version>0.0.1</Version>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Kroki.Core\Kroki.Core.csproj" />
+  <ItemGroup>    
+    <ProjectReference Include="..\..\run\Kroki.Runtime\Kroki.Runtime.csproj" PrivateAssets="All" />
+    <ProjectReference Include="..\Kroki.Core\Kroki.Core.csproj" OutputItemType="Analyzer" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +38,13 @@
 
   <ItemGroup>
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-    <None Include="..\..\README.md" Pack="true" PackagePath="" Visible="false" />
+    <None Include="$(OutputPath)\Kroki.Core.dll"      Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    <None Include="$(OutputPath)\DGrok.Framework.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+    <None Include="$(OutputPath)\Kroki.Runtime.dll" PackagePath="analyzers/dotnet/cs" Visible="false" Pack="true" />
+    <None Include="$(OutputPath)\Kroki.Runtime.dll" PackagePath="lib/netstandard2.0" Visible="true" Pack="true" />
+
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
 </Project>

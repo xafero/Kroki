@@ -1,4 +1,4 @@
-﻿namespace Kroki.Core
+﻿namespace Kroki.Runtime
 {
     public class Class1
     {
