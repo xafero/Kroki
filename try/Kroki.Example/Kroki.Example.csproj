@@ -16,7 +16,9 @@
   </ItemGroup>
 
 	<ItemGroup>
-		<AdditionalFiles Include="*.pas" />
+		<AdditionalFiles Include="**/*.pas" />
+		<Compile Remove="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
+		<None Include="$(CompilerGeneratedFilesOutputPath)/**/*.cs" />
     </ItemGroup>
 
 </Project>

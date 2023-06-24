@@ -38,21 +38,17 @@ namespace Kroki.Generator
 
                     var simpleName = Path.GetFileName(someFile.Path);
                     var hintName = $"{simpleName}.cs";
-                    var delphiCode = sourceText.ToString();
 
                     var nowDate = DateTime.Now.ToString("s");
                     var genCode = new StringBuilder();
                     genCode.AppendLine();
                     genCode.AppendLine($"// Generated at {nowDate}");
-                    genCode.AppendLine($"// Namespace: {rootSpace}");
-                    genCode.AppendLine();
-                    genCode.AppendLine($"// {delphiCode.Length} characters?!");
                     genCode.AppendLine();
 
                     string processed;
                     try
                     {
-                        processed = DelphiParser.ParsePas(simpleName, sourceText);
+                        processed = DelphiParser.ParsePas(simpleName, sourceText, rootSpace);
                     }
                     catch (Exception parseEx)
                     {

@@ -1,6 +1,6 @@
 program exObjects;
 type 
-   Rectangle = object  
+   Rectangle = class  
    private  
       length, width: integer; 
    

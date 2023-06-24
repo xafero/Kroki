@@ -1,4 +1,3 @@
-using Kroki.Generator;
 using Xunit;
 
 namespace Kroki.Tests
@@ -8,7 +7,7 @@ namespace Kroki.Tests
         [Fact]
         public void Test1()
         {
-            new Class1().Try1();
+            // TODO
         }
     }
 }
