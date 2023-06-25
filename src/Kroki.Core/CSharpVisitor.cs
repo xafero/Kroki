@@ -4,6 +4,7 @@ using DGrok.Framework;
 using System.Linq;
 using DGrok.DelphiNodes;
 using Kroki.Core.Model;
+using static Kroki.Core.Model.Coding;
 
 namespace Kroki.Core
 {
@@ -172,6 +173,7 @@ namespace Kroki.Core
                     clazz = fc;
                     method.Name = np.name;
                 }
+                InsertStatements(node.FancyBlockNode, method);
                 if (clazz != null)
                 {
                     method.IsStatic = clazz.IsStatic;
@@ -193,6 +195,39 @@ namespace Kroki.Core
             }
 
             base.VisitMethodImplementationNode(node);
+        }
+
+        private static void InsertStatements(FancyBlockNode block, MethodObj method)
+        {
+            foreach (var decl in block.DeclListNode.Items)
+            {
+                if (decl is VarSectionNode dvs)
+                    foreach (var field in GenerateFields(dvs))
+                    {
+                        var ft = field.FieldType;
+                        method.Statements.Add(Assign(ft, field.Name, Mapping.GetDefault(ft)));
+                    }
+            }
+            foreach (var item in block.BlockNode.ChildNodes)
+            {
+                if (item is ListNode<DelimitedItemNode<AstNode>> lna)
+                {
+                    foreach (var lItem in lna.Items)
+                    {
+                        switch (lItem.ItemNode)
+                        {
+                            case BinaryOperationNode bo:
+                                var left = bo.LeftNode.GetName();
+                                var right = bo.RightNode.GetName();
+                                if (bo.OperatorNode.Type == TokenType.ColonEquals)
+                                    method.Statements.Add(left == method.Name
+                                        ? Return(right)
+                                        : Assign(left, right));
+                                break;
+                        }
+                    }
+                }
+            }
         }
 
         public override string ToString()

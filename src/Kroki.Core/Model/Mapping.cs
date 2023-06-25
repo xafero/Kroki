@@ -48,5 +48,10 @@ namespace Kroki.Core.Model
             }
             throw new InvalidOperationException(visTxt);
         }
+
+        public static string GetDefault(string type)
+        {
+            return "default";
+        }
     }
 }
