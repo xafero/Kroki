@@ -43,10 +43,10 @@ jobs:
 
     - name: Publish
       if: startsWith(github.ref, 'refs/tags/')
-      run: ./build.sh
+      run: ./main/build.sh
 
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
-        files: pub/*.*
+        files: main/pub/*.*
