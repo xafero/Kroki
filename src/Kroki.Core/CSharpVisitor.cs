@@ -39,6 +39,30 @@ namespace Kroki.Core
             base.VisitInitSectionNode(node);
         }
 
+        public override void VisitVarSectionNode(VarSectionNode node)
+        {
+            var livesInProgram = node.ParentNode.ParentNode is ProgramNode;
+            var clazz = RootNsp.Members.OfType<ClassObj>().FirstOrDefault();
+            if (clazz != null && livesInProgram)
+            {
+                foreach (var subNode in node.VarListNode.Items)
+                {
+                    foreach (var subName in subNode.NameListNode.Items)
+                    {
+                        var subLabel = subName.ItemNode.Text;
+                        var subType = Mapping.ToCSharp(subNode.TypeNode);
+                        var field = new FieldObj(subLabel)
+                        {
+                            FieldType = subType, IsStatic = clazz.IsStatic
+                        };
+                        clazz.Members.Add(field);
+                    }
+                }
+            }
+
+            base.VisitVarSectionNode(node);
+        }
+
         public override string ToString()
         {
             var code = string.Join(Environment.NewLine, _nspAll

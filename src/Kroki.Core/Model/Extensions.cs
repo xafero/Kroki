@@ -8,7 +8,8 @@ namespace Kroki.Core.Model
 {
     internal static class Extensions
     {
-        public static SyntaxToken[] AsModifier(this Visibility visibility, bool isStatic = false)
+        public static SyntaxToken[] AsModifier(this Visibility visibility,
+            bool isStatic = false, bool isReadOnly = false)
         {
             var tok = new List<SyntaxToken>();
             switch (visibility)
@@ -25,6 +26,8 @@ namespace Kroki.Core.Model
             }
             if (isStatic)
                 tok.Add(Token(SyntaxKind.StaticKeyword));
+            if (isReadOnly)
+                tok.Add(Token(SyntaxKind.ReadOnlyKeyword));
             return tok.ToArray();
         }
 
