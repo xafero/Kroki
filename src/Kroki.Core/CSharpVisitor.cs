@@ -143,6 +143,58 @@ namespace Kroki.Core
             base.VisitVarSectionNode(node);
         }
 
+        private IEnumerable<T> FindByName<T>(string name) where T : class, IHasName
+            => _nspAll.SelectMany(n => FindByName<T>(n, name));
+
+        private static IEnumerable<T> FindByName<T>(IHasMembers list, string name)
+            where T : class, IHasName
+        {
+            foreach (var item in list.Members)
+            {
+                if (item is T hn && hn.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase))
+                    yield return hn;
+                if (item is not IHasMembers hm)
+                    continue;
+                foreach (var it in FindByName<T>(hm, name))
+                    yield return it;
+            }
+        }
+
+        public override void VisitMethodImplementationNode(MethodImplementationNode node)
+        {
+            var clazz = RootNsp.Members.OfType<ClassObj>().FirstOrDefault();
+            if (node.MethodHeadingNode is { } head)
+            {
+                var method = GenerateMethod(head);
+                var nameParts = Extensions.SplitName(method.Name);
+                if (nameParts is { } np && FindByName<ClassObj>(np.owner).FirstOrDefault() is { } fc)
+                {
+                    clazz = fc;
+                    method.Name = np.name;
+                }
+                if (clazz != null)
+                {
+                    method.IsStatic = clazz.IsStatic;
+                    method.IsAbstract = false;
+
+                    var existing = FindByName<MethodObj>(clazz, method.Name).ToArray();
+                    if (existing.Length == 1)
+                    {
+                        var existSingle = existing[0];
+                        var existIdx = clazz.Members.IndexOf(existSingle);
+                        clazz.Members.RemoveAt(existIdx);
+                        clazz.Members.Insert(existIdx, method);
+                    }
+                    else
+                    {
+                        clazz.Members.Add(method);
+                    }
+                }
+            }
+
+            base.VisitMethodImplementationNode(node);
+        }
+
         public override string ToString()
         {
             var code = string.Join(Environment.NewLine, _nspAll

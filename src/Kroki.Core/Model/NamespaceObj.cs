@@ -6,7 +6,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Model
 {
-    internal sealed class NamespaceObj : CompileObj<NamespaceDeclarationSyntax>
+    internal sealed class NamespaceObj : CompileObj<NamespaceDeclarationSyntax>, IHasMembers
     {
         public NamespaceObj(string name)
         {

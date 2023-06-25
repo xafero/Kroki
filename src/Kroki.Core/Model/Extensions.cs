@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -51,13 +52,30 @@ namespace Kroki.Core.Model
             return main;
         }
 
+        public const string NameSep = "::";
+
         public static string GetName(this AstNode node)
         {
             switch (node)
             {
-                case Token to: return to.Text;
+                case Token to:
+                    return to.Text;
+                case BinaryOperationNode bo:
+                    var left = bo.LeftNode.GetName();
+                    var opt = bo.OperatorNode.GetName();
+                    if (opt == ".") opt = NameSep;
+                    var right = bo.RightNode.GetName();
+                    return left + opt + right;
             }
             throw new InvalidOperationException($"{node} ?!");
+        }
+
+        public static (string owner, string name)? SplitName(string name)
+        {
+            var t = name.Split(new[] { NameSep }, 2, StringSplitOptions.None);
+            if (t.Length == 2)
+                return (t[0], t[1]);
+            return null;
         }
     }
 }

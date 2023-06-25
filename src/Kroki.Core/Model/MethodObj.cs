@@ -5,7 +5,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Model
 {
-    internal sealed class MethodObj : CompileObj<MemberDeclarationSyntax>
+    internal sealed class MethodObj : CompileObj<MemberDeclarationSyntax>, IHasName
     {
         public MethodObj(string name)
         {
@@ -21,7 +21,7 @@ namespace Kroki.Core.Model
         public Visibility Visibility { get; set; }
         public bool IsStatic { get; set; }
         public string ReturnType { get; set; }
-        public string Name { get; }
+        public string Name { get; set; }
         public List<CompileObj<ParameterSyntax>> Params { get; }
         public bool IsAbstract { get; set; }
         public List<StatementSyntax> Statements { get; }
