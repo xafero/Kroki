@@ -53,5 +53,29 @@ namespace Kroki.Core.Model
         {
             return "default";
         }
+
+        public static void Replace(ref string owner, ref string method)
+        {
+            if (string.IsNullOrWhiteSpace(owner))
+                switch (method)
+                {
+                    case "write":
+                        owner = "Console";
+                        method = "Write";
+                        break;
+                    case "writeln":
+                        owner = "Console";
+                        method = "WriteLine";
+                        break;
+                    case "new":
+                        owner = "Compat";
+                        method = "Renew";
+                        break;
+                    case "dispose":
+                        owner = "Compat";
+                        method = "Dispose";
+                        break;
+                }
+        }
     }
 }

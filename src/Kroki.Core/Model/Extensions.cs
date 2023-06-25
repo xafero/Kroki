@@ -66,6 +66,9 @@ namespace Kroki.Core.Model
                     if (opt == ".") opt = NameSep;
                     var right = bo.RightNode.GetName();
                     return left + opt + right;
+                case PointerDereferenceNode pd:
+                    // TODO Handle pointer!
+                    return pd.OperandNode.GetName();
             }
             throw new InvalidOperationException($"{node} ?!");
         }

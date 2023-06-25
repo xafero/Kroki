@@ -16,6 +16,7 @@ namespace Kroki.Core
         public CSharpVisitor(string nspName)
         {
             _nspAll = new List<NamespaceObj> { new(nspName) };
+            RootNsp.Usings.Add("Kroki.Runtime");
         }
 
         private NamespaceObj RootNsp => _nspAll[0];
@@ -34,8 +35,11 @@ namespace Kroki.Core
             var clazz = RootNsp.Members.OfType<ClassObj>().FirstOrDefault();
             if (clazz != null)
             {
-                var main = Extensions.CreateMain();
-                clazz.Members.Add(main);
+                var method = Extensions.CreateMain();
+                var block = node.InitializationStatementListNode;
+                foreach (var stat in Read(block, string.Empty))
+                    method.Statements.Add(stat);
+                clazz.Members.Add(method);
             }
 
             base.VisitInitSectionNode(node);
@@ -174,7 +178,9 @@ namespace Kroki.Core
                     clazz = fc;
                     method.Name = np.name;
                 }
-                InsertStatements(node.FancyBlockNode, method);
+                var block = node.FancyBlockNode;
+                foreach (var stat in Read(block, method.Name))
+                    method.Statements.Add(stat);
                 if (clazz != null)
                 {
                     method.IsStatic = clazz.IsStatic;
@@ -198,6 +204,30 @@ namespace Kroki.Core
             base.VisitMethodImplementationNode(node);
         }
 
+        private static IEnumerable<ArgumentSyntax> ReadArg(AstNode? node)
+        {
+            object? debug = null;
+            switch (node)
+            {
+                case DelimitedItemNode<AstNode> dia:
+                    return ReadArg(dia.ItemNode);
+                case ParameterizedNode pn:
+                    return Read(pn, string.Empty).Arg();
+                case Token to:
+                    debug = to.Type;
+                    switch (to.Type)
+                    {
+                        case TokenType.Number:
+                            return new[] { ArgN(to.Text) };
+                        case TokenType.Identifier:
+                        case TokenType.StringLiteral:
+                            return new[] { Arg(to.Text) };
+                    }
+                    break;
+            }
+            throw new InvalidOperationException($"{node} ({node?.GetType()}) [{debug}]");
+        }
+
         private static IEnumerable<StatementSyntax> Read(AstNode? node, string methodName)
         {
             switch (node)
@@ -215,12 +245,13 @@ namespace Kroki.Core
                 case FancyBlockNode fn:
                     return fn.DeclListNode.Items.SelectMany(i => Read(i, methodName))
                         .Concat(Read(fn.BlockNode, methodName));
-                case ParameterizedNode:
-                    return Array.Empty<StatementSyntax>();
+                case ParameterizedNode pn:
+                    return Read(pn, methodName);
                 case Token to:
                     switch (to.Type)
                     {
                         case TokenType.Identifier:
+                            return Read(to, methodName);
                         case TokenType.BeginKeyword:
                         case TokenType.EndKeyword:
                             return Array.Empty<StatementSyntax>();
@@ -237,6 +268,29 @@ namespace Kroki.Core
                 var ft = field.FieldType;
                 yield return Assign(ft, field.Name, Mapping.GetDefault(ft));
             }
+        }
+
+        private static IEnumerable<StatementSyntax> Read(Token token, string _)
+        {
+            var owner = string.Empty;
+            var method = token.GetName();
+            var args = Array.Empty<ArgumentSyntax>();
+            yield return Invoke(owner, method, args);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(ParameterizedNode bo, string _)
+        {
+            var left = bo.LeftNode.GetName();
+            var owner = string.Empty;
+            var method = left;
+            if (Extensions.SplitName(method) is { } sp)
+            {
+                owner = sp.owner;
+                method = sp.name;
+            }
+            var prm = bo.ParameterListNode;
+            var args = prm.Items.SelectMany(ReadArg).ToArray();
+            yield return Invoke(owner, method, args);
         }
 
         private static IEnumerable<StatementSyntax> Read(BinaryOperationNode bo, string methodName)
@@ -256,12 +310,6 @@ namespace Kroki.Core
             var end = fs.EndingValueNode.GetName();
             var s = Read(fs.StatementNode, methodName).ToList();
             yield return For(loop, start, end, s);
-        }
-
-        private static void InsertStatements(FancyBlockNode block, MethodObj method)
-        {
-            foreach (var stat in Read(block, method.Name))
-                method.Statements.Add(stat);
         }
 
         public override string ToString()

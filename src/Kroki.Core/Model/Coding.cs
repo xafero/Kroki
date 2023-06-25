@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -39,6 +40,33 @@ namespace Kroki.Core.Model
             });
             var statement = Block(s);
             return ForStatement(declaration, ini, cond, inc, statement);
+        }
+
+        public static ExpressionStatementSyntax Invoke(string owner, string method, IEnumerable<ArgumentSyntax> a)
+        {
+            Mapping.Replace(ref owner, ref method);
+            var args = ArgumentList(SeparatedList(a));
+            return ExpressionStatement(InvocationExpression(MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression, IdentifierName(owner),
+                IdentifierName(method)), args));
+        }
+
+        public static ArgumentSyntax Arg(string text)
+        {
+            if (text.StartsWith("'") && text.EndsWith("'"))
+                text = text.Trim('\'');
+            return Argument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(text)));
+        }
+
+        public static ArgumentSyntax ArgN(string text)
+        {
+            return Argument(LiteralExpression(SyntaxKind.NumericLiteralExpression, ParseToken(text)));
+        }
+
+        public static IEnumerable<ArgumentSyntax> Arg(this IEnumerable<StatementSyntax> stat)
+        {
+            foreach (var expr in stat.OfType<ExpressionStatementSyntax>())
+                yield return Argument(expr.Expression);
         }
     }
 }
