@@ -1,2 +1,2 @@
 #!/bin/sh
-dotnet pack main/src/Kroki.Generator -o pub
+dotnet pack src/Kroki.Generator -o pub
