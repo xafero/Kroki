@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
 
@@ -37,6 +34,19 @@ namespace Kroki.Core.Model
                     return "int";
             }
             return typeName;
+        }
+
+        public static Visibility ToCSharp(VisibilityNode visNode)
+        {
+            var visTxt = visNode.VisibilityKeywordNode.Text;
+            switch (visTxt)
+            {
+                case "private":
+                    return Visibility.Private;
+                case "public":
+                    return Visibility.Public;
+            }
+            throw new InvalidOperationException(visTxt);
         }
     }
 }

@@ -39,24 +39,104 @@ namespace Kroki.Core
             base.VisitInitSectionNode(node);
         }
 
+        public override void VisitTypeDeclNode(TypeDeclNode node)
+        {
+            var livesInProgram = node.ParentNode.ParentNode.ParentNode.ParentNode is ProgramNode;
+            var clazz = RootNsp.Members.OfType<ClassObj>().FirstOrDefault();
+            if (clazz != null && livesInProgram)
+            {
+                var tClazz = GenerateClass(node);
+                clazz.Members.Add(tClazz);
+            }
+
+            base.VisitTypeDeclNode(node);
+        }
+
+        private static ClassObj GenerateClass(TypeDeclNode node)
+        {
+            var tName = node.NameNode.Text;
+            var tClazz = new ClassObj(tName);
+            if (node.TypeNode is ClassTypeNode ctn)
+            {
+                foreach (var cln in ctn.ContentListNode.Items)
+                {
+                    var vis = Mapping.ToCSharp(cln.VisibilityNode);
+                    foreach (var clnItm in cln.ContentListNode.Items)
+                    {
+                        if (clnItm is FieldSectionNode fsn)
+                        {
+                            foreach (var field in GenerateFields(fsn))
+                            {
+                                field.IsStatic = tClazz.IsStatic;
+                                field.Visibility = vis;
+                                tClazz.Members.Add(field);
+                            }
+                            continue;
+                        }
+                        if (clnItm is MethodHeadingNode mhn)
+                        {
+                            var method = GenerateMethod(mhn);
+                            method.IsStatic = tClazz.IsStatic;
+                            method.Visibility = vis;
+                            tClazz.Members.Add(method);
+                        }
+                    }
+                }
+            }
+            return tClazz;
+        }
+
+        private static MethodObj GenerateMethod(MethodHeadingNode node)
+        {
+            var name = node.NameNode.GetName();
+            var method = new MethodObj(name);
+            if (node.MethodTypeNode.Type == TokenType.ProcedureKeyword)
+                method.ReturnType = "void";
+            else if (node.MethodTypeNode.Type == TokenType.FunctionKeyword)
+                method.ReturnType = Mapping.ToCSharp(node.ReturnTypeNode);
+            method.IsAbstract = true;
+            var par = GenerateFields(node);
+            foreach (var pItem in par)
+            {
+                var pObj = new ParamObj(pItem.Name) { Type = pItem.FieldType };
+                method.Params.Add(pObj);
+            }
+            return method;
+        }
+
+        private static IEnumerable<FieldObj> GenerateFields(MethodHeadingNode node)
+            => CreateFields(node.ParameterListNode.Items.Select(i => i.ItemNode));
+
+        private static IEnumerable<FieldObj> GenerateFields(FieldSectionNode node)
+            => CreateFields(node.FieldListNode.Items);
+
+        private static IEnumerable<FieldObj> GenerateFields(VarSectionNode node)
+            => CreateFields(node.VarListNode.Items);
+
+        private static IEnumerable<FieldObj> CreateFields<T>(IEnumerable<T> items)
+            where T : IHasTypeAndName
+        {
+            foreach (var subNode in items)
+            {
+                var subType = Mapping.ToCSharp(subNode.TypeNode);
+                foreach (var subName in subNode.NameListNode.Items)
+                {
+                    var subLabel = subName.ItemNode.Text;
+                    yield return new FieldObj(subLabel) { FieldType = subType };
+                }
+            }
+        }
+
         public override void VisitVarSectionNode(VarSectionNode node)
         {
             var livesInProgram = node.ParentNode.ParentNode is ProgramNode;
             var clazz = RootNsp.Members.OfType<ClassObj>().FirstOrDefault();
             if (clazz != null && livesInProgram)
             {
-                foreach (var subNode in node.VarListNode.Items)
+                foreach (var field in GenerateFields(node))
                 {
-                    foreach (var subName in subNode.NameListNode.Items)
-                    {
-                        var subLabel = subName.ItemNode.Text;
-                        var subType = Mapping.ToCSharp(subNode.TypeNode);
-                        var field = new FieldObj(subLabel)
-                        {
-                            FieldType = subType, IsStatic = clazz.IsStatic
-                        };
-                        clazz.Members.Add(field);
-                    }
+                    field.IsStatic = clazz.IsStatic;
+                    clazz.Members.Add(field);
                 }
             }
 
