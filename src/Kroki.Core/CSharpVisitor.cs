@@ -4,6 +4,7 @@ using DGrok.Framework;
 using System.Linq;
 using DGrok.DelphiNodes;
 using Kroki.Core.Model;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Core.Model.Coding;
 
 namespace Kroki.Core
@@ -197,37 +198,70 @@ namespace Kroki.Core
             base.VisitMethodImplementationNode(node);
         }
 
+        private static IEnumerable<StatementSyntax> Read(AstNode? node, string methodName)
+        {
+            switch (node)
+            {
+                case VarSectionNode vsn:
+                    return Read(vsn, methodName);
+                case ListNode<DelimitedItemNode<AstNode>> lna:
+                    return lna.Items.SelectMany(i => Read(i.ItemNode, methodName));
+                case BinaryOperationNode bo:
+                    return Read(bo, methodName);
+                case ForStatementNode fs:
+                    return Read(fs, methodName);
+                case BlockNode bn:
+                    return bn.ChildNodes.SelectMany(i => Read(i, methodName));
+                case FancyBlockNode fn:
+                    return fn.DeclListNode.Items.SelectMany(i => Read(i, methodName))
+                        .Concat(Read(fn.BlockNode, methodName));
+                case ParameterizedNode:
+                    return Array.Empty<StatementSyntax>();
+                case Token to:
+                    switch (to.Type)
+                    {
+                        case TokenType.Identifier:
+                        case TokenType.BeginKeyword:
+                        case TokenType.EndKeyword:
+                            return Array.Empty<StatementSyntax>();
+                    }
+                    break;
+            }
+            throw new InvalidOperationException($"{methodName} --> {node}");
+        }
+
+        private static IEnumerable<StatementSyntax> Read(VarSectionNode dvs, string _)
+        {
+            foreach (var field in GenerateFields(dvs))
+            {
+                var ft = field.FieldType;
+                yield return Assign(ft, field.Name, Mapping.GetDefault(ft));
+            }
+        }
+
+        private static IEnumerable<StatementSyntax> Read(BinaryOperationNode bo, string methodName)
+        {
+            var left = bo.LeftNode.GetName();
+            var right = bo.RightNode.GetName();
+            if (bo.OperatorNode.Type == TokenType.ColonEquals)
+                yield return left == methodName
+                    ? Return(right)
+                    : Assign(left, right);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(ForStatementNode fs, string methodName)
+        {
+            var loop = fs.LoopVariableNode.GetName();
+            var start = fs.StartingValueNode.GetName();
+            var end = fs.EndingValueNode.GetName();
+            var s = Read(fs.StatementNode, methodName).ToList();
+            yield return For(loop, start, end, s);
+        }
+
         private static void InsertStatements(FancyBlockNode block, MethodObj method)
         {
-            foreach (var decl in block.DeclListNode.Items)
-            {
-                if (decl is VarSectionNode dvs)
-                    foreach (var field in GenerateFields(dvs))
-                    {
-                        var ft = field.FieldType;
-                        method.Statements.Add(Assign(ft, field.Name, Mapping.GetDefault(ft)));
-                    }
-            }
-            foreach (var item in block.BlockNode.ChildNodes)
-            {
-                if (item is ListNode<DelimitedItemNode<AstNode>> lna)
-                {
-                    foreach (var lItem in lna.Items)
-                    {
-                        switch (lItem.ItemNode)
-                        {
-                            case BinaryOperationNode bo:
-                                var left = bo.LeftNode.GetName();
-                                var right = bo.RightNode.GetName();
-                                if (bo.OperatorNode.Type == TokenType.ColonEquals)
-                                    method.Statements.Add(left == method.Name
-                                        ? Return(right)
-                                        : Assign(left, right));
-                                break;
-                        }
-                    }
-                }
-            }
+            foreach (var stat in Read(block, method.Name))
+                method.Statements.Add(stat);
         }
 
         public override string ToString()
