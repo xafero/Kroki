@@ -8,11 +8,11 @@
 
     <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>auto</CompilerGeneratedFilesOutputPath>
+    <StartupObject>Kroki.Example.Program</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Kroki.Generator\Kroki.Generator.csproj" 
-                      ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
+    <ProjectReference Include="..\..\src\Kroki.Generator\Kroki.Generator.csproj" ReferenceOutputAssembly="false" OutputItemType="Analyzer" />
   </ItemGroup>
 
 	<ItemGroup>

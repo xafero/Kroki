@@ -48,7 +48,7 @@ namespace Kroki.Generator
                     string processed;
                     try
                     {
-                        processed = DelphiParser.ParsePas(simpleName, sourceText, rootSpace);
+                        processed = DelphiParser.Parse(simpleName, sourceText, rootSpace);
                     }
                     catch (Exception parseEx)
                     {

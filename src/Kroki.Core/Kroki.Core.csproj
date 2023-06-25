@@ -19,8 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\dgrok\Source\DGrok.Framework\DGrok.Framework.csproj" 
-                      OutputItemType="Analyzer" PrivateAssets="all" />
+    <ProjectReference Include="..\..\..\dgrok\Source\DGrok.Framework\DGrok.Framework.csproj" OutputItemType="Analyzer" PrivateAssets="all" />
   </ItemGroup>
 
 </Project>
