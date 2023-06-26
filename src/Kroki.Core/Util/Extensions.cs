@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
@@ -73,6 +74,16 @@ namespace Kroki.Core.Util
                     return pd.OperandNode.GetName();
             }
             throw new InvalidOperationException($"{node} ?!");
+        }
+
+        public static string? GetFileName(this UsedUnitNode node)
+        {
+            var text = node.FileNameNode?.Text;
+            text ??= node.Location.FileName;
+            text ??= node.EndLocation.FileName;
+            if (!string.IsNullOrWhiteSpace(text))
+                text = Path.GetFileNameWithoutExtension(text);
+            return text;
         }
 
         public static (string owner, string name)? SplitName(string name)

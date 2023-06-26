@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Kroki.Core.Util;
-using Microsoft.CodeAnalysis.Text;
+using static Kroki.Core.Util.Helpers;
 
 namespace Kroki.Bulk.Read
 {
     internal static class Delphi
     {
-        private static readonly Encoding Utf = Encoding.UTF8;
-
         public static void ParseRes(string file, string outFile)
         {
             // TODO
@@ -29,13 +25,11 @@ namespace Kroki.Bulk.Read
             using var stream = File.Create(outFile);
             using var code = new StreamWriter(stream, Utf);
 
-            const string rootSpace = "Kroki.Example";
-            Helpers.TransformComment(pasLines, code);
+            TransformComment(pasLines, code);
 
-            var text = File.ReadAllText(file, Utf);
-            var src = SourceText.From(text, Utf);
+            var src = ReadSource(file);
 
-            var (_, csCode) = Helpers.Translate(file, src, rootSpace);
+            var (_, csCode) = Translate(file, src);
             code.Write(csCode);
 
             Console.WriteLine($"   * Converted to '{outFile}'...");

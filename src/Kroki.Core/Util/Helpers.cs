@@ -8,6 +8,8 @@ namespace Kroki.Core.Util
 {
     public static class Helpers
     {
+        public static readonly Encoding Utf = Encoding.UTF8;
+
         public static void TransformComment(List<string> pasLines, TextWriter code)
         {
             var doComment = false;
@@ -50,16 +52,20 @@ namespace Kroki.Core.Util
                 code.WriteLine();
         }
 
-        public static (string file, string content) Translate(string path, SourceText code, string rSpace)
+        public static (string file, string content) Translate(string path, SourceText code,
+            string rSpace = "Kroki.Example", bool includeDate = true)
         {
             var simpleName = Path.GetFileName(path);
             var hintName = $"{simpleName}.cs";
 
             var nowDate = DateTime.Now.ToString("s");
             var genCode = new StringBuilder();
-            genCode.AppendLine();
-            genCode.AppendLine($"// Generated at {nowDate}");
-            genCode.AppendLine();
+            if (includeDate)
+            {
+                genCode.AppendLine();
+                genCode.AppendLine($"// Generated at {nowDate}");
+                genCode.AppendLine();
+            }
 
             string processed;
             try
@@ -72,6 +78,13 @@ namespace Kroki.Core.Util
             }
             var genText = genCode + processed + Environment.NewLine;
             return (hintName, genText);
+        }
+
+        public static SourceText ReadSource(string file)
+        {
+            var text = File.ReadAllText(file, Utf);
+            var src = SourceText.From(text, Utf);
+            return src;
         }
     }
 }
