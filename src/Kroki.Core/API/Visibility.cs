@@ -1,4 +1,4 @@
-﻿namespace Kroki.Core.Model
+﻿namespace Kroki.Core.API
 {
     internal enum Visibility
     {

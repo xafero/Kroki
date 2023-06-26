@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
+using Kroki.Core.API;
+using Kroki.Core.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Kroki.Core.Model
+namespace Kroki.Core.Util
 {
     internal static class Extensions
     {

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using Kroki.Core;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using static Kroki.Core.Util.Helpers;
 
 namespace Kroki.Generator
 {
@@ -36,25 +35,7 @@ namespace Kroki.Generator
                     if (sourceText == null)
                         continue;
 
-                    var simpleName = Path.GetFileName(someFile.Path);
-                    var hintName = $"{simpleName}.cs";
-
-                    var nowDate = DateTime.Now.ToString("s");
-                    var genCode = new StringBuilder();
-                    genCode.AppendLine();
-                    genCode.AppendLine($"// Generated at {nowDate}");
-                    genCode.AppendLine();
-
-                    string processed;
-                    try
-                    {
-                        processed = DelphiParser.Parse(simpleName, sourceText, rootSpace);
-                    }
-                    catch (Exception parseEx)
-                    {
-                        processed = $"/* {parseEx} */";
-                    }
-                    var genText = genCode + processed + Environment.NewLine;
+                    var (hintName, genText) = Translate(someFile.Path, sourceText, rootSpace);
                     context.AddSource(hintName, SourceText.From(genText, Encoding.UTF8));
                 }
             }
