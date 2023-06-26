@@ -1,4 +1,5 @@
 using System.IO;
+using System.Text;
 using System.Reflection;
 using Xunit;
 using static Kroki.Core.Util.Helpers;
@@ -47,8 +48,10 @@ namespace Kroki.Tests
             var (_, translated) = Translate(inFile, inSrc, includeDate: false);
             File.WriteAllText(tmpFile, translated);
 
-            var expected = File.ReadAllText(outFile);
-            Assert.Equal(expected, translated);
+            var expected = File.ReadAllText(outFile, Encoding.UTF8);
+            Assert.Equal(Clean(expected), Clean(translated));
         }
+
+        private static string Clean(string text) => text.Replace("\r\n", "\n");
     }
 }
