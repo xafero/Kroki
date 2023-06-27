@@ -1,5 +1,6 @@
 @echo off
 
+taskkill /f /im VBCSCompiler.exe
 taskkill /f /im dotnet.exe
 rd /s /q %TEMP%\VBCSCompiler\AnalyzerAssemblyLoader
 rd /s /q %TEMP%\VS\AnalyzerAssemblyLoader
