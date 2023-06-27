@@ -35,9 +35,9 @@ namespace Kroki.Example
             {
                 int i = default;
                 int j = default;
-                for (i = 1; i < length; i++)
+                for (i = 1; i <= length; i++)
                 {
-                    for (j = 1; j < width; j++)
+                    for (j = 1; j <= width; j++)
                     {
                         Console.Write(" * ");
                     }
