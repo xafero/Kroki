@@ -32,7 +32,19 @@ namespace Kroki.Tests
             ParseAndCheck("UnitFunctions");
         }
 
-        private static void ParseAndCheck(string name)
+        [Fact]
+        public void ConvertSmallForm()
+        {
+            ParseAndCheck("SmForm");
+        }
+
+        [Fact]
+        public void ConvertSyntax()
+        {
+            ParseAndCheck("Syntax");
+        }
+
+        private static void ParseAndCheck(string name, string ext = "pas")
         {
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
             var inDir = Path.Combine(dir, "Input");
@@ -40,7 +52,7 @@ namespace Kroki.Tests
             var tmpDir = Path.Combine(dir, "Tmp");
             tmpDir = Directory.CreateDirectory(tmpDir).FullName;
 
-            var inFile = Path.Combine(inDir, $"{name}.pas");
+            var inFile = Path.Combine(inDir, $"{name}.{ext}");
             var outFile = Path.Combine(outDir, $"{name}.cs");
             var tmpFile = Path.Combine(tmpDir, $"{name}.cs");
 

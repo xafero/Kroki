@@ -107,7 +107,11 @@ namespace Kroki.Core
 
             var existing = FindByName<MethodObj>(clazz, method.Name).ToArray();
             if (existing.Length == 1)
-                ReplaceIn(clazz.Members, existing[0], method);
+            {
+                var oldOne = existing[0];
+                method.Visibility = oldOne.Visibility;
+                ReplaceIn(clazz.Members, oldOne, method);
+            }
             else
                 clazz.Members.Add(method);
 
@@ -216,6 +220,9 @@ namespace Kroki.Core
             var opType = bo.OperatorNode.Type;
             switch (opType)
             {
+                case TokenType.PlusSign:
+                    // TODO
+                    break;
                 case TokenType.Dot:
                     yield return Invoke(left, right, Array.Empty<ArgumentSyntax>());
                     break;
@@ -266,8 +273,9 @@ namespace Kroki.Core
             var loop = fs.LoopVariableNode.GetName();
             var start = fs.StartingValueNode.GetName();
             var end = fs.EndingValueNode.GetName();
+            var down = fs.DirectionNode.Type == TokenType.DownToKeyword;
             var s = Read(fs.StatementNode, ctx).ToList();
-            yield return For(loop, start, end, s);
+            yield return For(loop, start, end, down, s);
         }
 
         public override void VisitInitSectionNode(InitSectionNode node)
@@ -326,7 +334,8 @@ namespace Kroki.Core
             {
                 foreach (var cln in ctn.ContentListNode.Items)
                 {
-                    var vis = Mapping.ToCSharp(cln.VisibilityNode);
+                    var visNode = cln.VisibilityNode;
+                    var vis = visNode == null ? Visibility.Public : Mapping.ToCSharp(visNode);
                     foreach (var clnItm in cln.ContentListNode.Items)
                     {
                         if (clnItm is FieldSectionNode fsn)
@@ -370,6 +379,8 @@ namespace Kroki.Core
                             return new[] { Arg(to.Text) };
                         case TokenType.Number:
                             return new[] { ArgN(to.Text) };
+                        case TokenType.NilKeyword:
+                            return new[] { ArgN("null") };
                     }
                     break;
             }

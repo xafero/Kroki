@@ -4,6 +4,8 @@
     {
         Public = 0,
 
+        Protected,
+
         Private,
 
         Internal

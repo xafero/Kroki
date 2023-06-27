@@ -47,8 +47,14 @@ namespace Kroki.Core.Code
                     return "decimal";
                 case "Char":
                     return "char";
+                case "Real":
+                case "real":
                 case "Single":
                     return "float";
+                case "Double":
+                    return "double";
+                case "Extended":
+                    return "long";
                 case "TDateTime":
                     return "DateTime";
                 case "HResult":
@@ -80,6 +86,8 @@ namespace Kroki.Core.Code
             {
                 case "private":
                     return Visibility.Private;
+                case "protected":
+                    return Visibility.Protected;
                 case "public":
                     return Visibility.Public;
             }
@@ -94,8 +102,16 @@ namespace Kroki.Core.Code
         public static void Replace(ref string owner, ref string method)
         {
             if (string.IsNullOrWhiteSpace(owner))
-                switch (method)
+                switch (method.ToLower())
                 {
+                    case "read":
+                        owner = "Console";
+                        method = "Read";
+                        break;
+                    case "readln":
+                        owner = "Console";
+                        method = "ReadLine";
+                        break;
                     case "write":
                         owner = "Console";
                         method = "Write";

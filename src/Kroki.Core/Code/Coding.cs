@@ -25,7 +25,8 @@ namespace Kroki.Core.Code
             return IdentifierName(value);
         }
 
-        public static StatementSyntax For(string loop, string start, string end, IEnumerable<StatementSyntax> s)
+        public static StatementSyntax For(string loop, string start, string end, bool isDown,
+            IEnumerable<StatementSyntax> s)
         {
             VariableDeclarationSyntax? declaration = null;
             var ini = SeparatedList<ExpressionSyntax>(new[]
@@ -33,10 +34,14 @@ namespace Kroki.Core.Code
                 AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, IdentifierName(loop),
                     LiteralExpression(SyntaxKind.NumericLiteralExpression, ParseToken(start)))
             });
-            var cond = BinaryExpression(SyntaxKind.LessThanExpression, IdentifierName(loop), ParseExpression(end));
+            var cond = BinaryExpression(
+                isDown ? SyntaxKind.GreaterThanOrEqualExpression : SyntaxKind.LessThanOrEqualExpression,
+                IdentifierName(loop), ParseExpression(end));
             var inc = SeparatedList<ExpressionSyntax>(new[]
             {
-                PostfixUnaryExpression(SyntaxKind.PostIncrementExpression, IdentifierName(loop))
+                PostfixUnaryExpression(isDown
+                    ? SyntaxKind.PostDecrementExpression
+                    : SyntaxKind.PostIncrementExpression, IdentifierName(loop))
             });
             var statement = Block(s);
             return ForStatement(declaration, ini, cond, inc, statement);
