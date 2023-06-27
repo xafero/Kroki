@@ -4,7 +4,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Model
 {
-    internal sealed class ParamObj : CompileObj<ParameterSyntax>
+    public sealed class ParamObj : CompileObj<ParameterSyntax>
     {
         public ParamObj(string name)
         {

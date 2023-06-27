@@ -1,6 +1,6 @@
 ﻿namespace Kroki.Core.API
 {
-    internal enum Visibility
+    public enum Visibility
     {
         Public = 0,
 

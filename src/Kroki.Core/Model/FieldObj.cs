@@ -5,7 +5,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Model
 {
-    internal sealed class FieldObj : CompileObj<MemberDeclarationSyntax>
+    public sealed class FieldObj : CompileObj<MemberDeclarationSyntax>
     {
         public FieldObj(string name)
         {

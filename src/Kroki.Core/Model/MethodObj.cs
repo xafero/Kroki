@@ -7,7 +7,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Model
 {
-    internal sealed class MethodObj : CompileObj<MemberDeclarationSyntax>, IHasName
+    public sealed class MethodObj : CompileObj<MemberDeclarationSyntax>, IHasName
     {
         public MethodObj(string name)
         {

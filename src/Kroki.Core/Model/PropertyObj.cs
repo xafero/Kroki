@@ -6,7 +6,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Model
 {
-    internal sealed class PropertyObj : CompileObj<MemberDeclarationSyntax>
+    public sealed class PropertyObj : CompileObj<MemberDeclarationSyntax>
     {
         public PropertyObj(string name)
         {
