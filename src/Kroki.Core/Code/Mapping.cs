@@ -21,6 +21,8 @@ namespace Kroki.Core.Code
                     {
                         case TokenType.Identifier:
                             return ConvertType(typeName);
+                        case TokenType.StringKeyword:
+                            return ConvertType(typeName);
                     }
                     break;
             }
@@ -31,20 +33,42 @@ namespace Kroki.Core.Code
         {
             switch (typeName)
             {
-                case "Boolean": case "boolean": case "WordBool": return "bool";
-                case "Integer": case "integer": return "int";
-                case "LongWord": case "LongInt": return "uint";
-                case "Currency": return "decimal";
-                case "Char": return "char";
-                case "Single": return "float";
-                case "TDateTime": return "DateTime";
-                case "HResult": return "IntPtr";
-                case "WideString": case "String": case "string": return "string";
-                case "TObject": return "object";
-                case "OleVariant": return "DataTable";
-                case "TFDQuery": return "ClientDataSet";
-                case "Exception": case "exception": return "Exception";
-                case "TStringList": case "List<String>": return "List<String>";
+                case "Boolean":
+                case "boolean":
+                case "WordBool":
+                    return "bool";
+                case "Integer":
+                case "integer":
+                    return "int";
+                case "LongWord":
+                case "LongInt":
+                    return "uint";
+                case "Currency":
+                    return "decimal";
+                case "Char":
+                    return "char";
+                case "Single":
+                    return "float";
+                case "TDateTime":
+                    return "DateTime";
+                case "HResult":
+                    return "IntPtr";
+                case "WideString":
+                case "String":
+                case "string":
+                    return "string";
+                case "TObject":
+                    return "object";
+                case "OleVariant":
+                    return "DataTable";
+                case "TFDQuery":
+                    return "ClientDataSet";
+                case "Exception":
+                case "exception":
+                    return "Exception";
+                case "TStringList":
+                case "List<String>":
+                    return "List<String>";
             }
             return typeName;
         }
@@ -89,6 +113,17 @@ namespace Kroki.Core.Code
                         method = "Dispose";
                         break;
                 }
+        }
+
+        public static string PatchConstant(string text)
+        {
+            switch (text)
+            {
+                case "False": return "false";
+            }
+            if (text.StartsWith("'") && text.EndsWith("'"))
+                return @$"""{text.Trim('\'')}""";
+            return text;
         }
     }
 }
