@@ -8,13 +8,15 @@ namespace Kroki.Core.Model
 {
     public sealed class FieldObj : CompileObj<MemberDeclarationSyntax>
     {
-        public FieldObj(string name)
+        public FieldObj(string name, string? value = null)
         {
             Visibility = Visibility.Public;
             FieldType = "object";
             IsStatic = false;
             IsReadOnly = false;
             Name = name;
+            if (value != null)
+                (FieldType, Value) = Values.Parse(value);
         }
 
         public Visibility Visibility { get; set; }
@@ -22,12 +24,12 @@ namespace Kroki.Core.Model
         public bool IsReadOnly { get; set; }
         public string FieldType { get; set; }
         public string Name { get; }
-        public string? Value { get; set; }
+        public object? Value { get; set; }
 
         public override MemberDeclarationSyntax Create()
         {
             var vd = VariableDeclarator(Name);
-            var eq = Value == null ? null : EqualsValueClause(Coding.ExprNum(Value));
+            var eq = Value == null ? null : EqualsValueClause(Express.AsValue(Value));
             if (eq != null)
                 vd = vd.WithInitializer(eq);
             return FieldDeclaration(VariableDeclaration(ParseTypeName(FieldType)).AddVariables(vd))

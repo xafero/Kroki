@@ -8,32 +8,28 @@ namespace Kroki.Core.Model
 {
     public sealed class ConstObj : CompileObj<MemberDeclarationSyntax>
     {
-        public ConstObj(string name)
+        public ConstObj(string name, string value = "42")
         {
             Visibility = Visibility.Public;
             Name = name;
-            FieldType = "int";
-            Value = "42";
+            (FieldType, Value) = Values.Parse(value);
         }
 
         public ConstObj(FieldObj field)
         {
             Visibility = field.Visibility;
             Name = field.Name;
-            FieldType = field.FieldType;
-            Value = field.Value ?? "null";
-
-            if (int.TryParse(Value, out _)) FieldType = "int";
+            (FieldType, Value) = Values.Parse(field.Value?.ToString() ?? Values.Null);
         }
 
         public Visibility Visibility { get; set; }
         public string Name { get; }
         public string FieldType { get; set; }
-        public string Value { get; set; }
+        public object? Value { get; set; }
 
         public override MemberDeclarationSyntax Create()
         {
-            var eq = EqualsValueClause(Coding.ExprNum(Value));
+            var eq = EqualsValueClause(Express.AsValue(Value));
             var vd = VariableDeclaration(ParseTypeName(FieldType))
                 .AddVariables(VariableDeclarator(Name).WithInitializer(eq));
             var fd = FieldDeclaration(vd)
