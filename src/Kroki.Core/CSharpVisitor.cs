@@ -426,7 +426,7 @@ namespace Kroki.Core
             if (node.ParentNode is ProgramNode)
             {
                 var clazz = RootNsp.Members.OfType<ClassObj>().First();
-                var method = Extensions.CreateMain();
+                var method = Prebuilt.CreateMain();
                 var block = node.InitializationStatementListNode;
                 foreach (var stat in Read(block, new Context(method.Name)))
                     method.Statements.Add(stat);
