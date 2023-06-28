@@ -6,6 +6,7 @@ using System.Linq;
 using Kroki.Core.API;
 using static Kroki.Core.Util.RoExtensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using Microsoft.CodeAnalysis;
 
 namespace Kroki.Core.Code
 {
@@ -148,11 +149,33 @@ namespace Kroki.Core.Code
 
         public static ArgumentSyntax Arg(ExpressionSyntax syntax) => Argument(syntax);
 
-        private static ExpressionSyntax Invoke(ExpressionSyntax owner, SimpleNameSyntax method,
+        public static ExpressionSyntax Invoke(ExpressionSyntax owner, SimpleNameSyntax method,
             IEnumerable<ArgumentSyntax> args)
         {
             var member = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, owner, method);
             return InvocationExpression(member, ArgumentList(SeparatedList(args)));
+        }
+
+        public static ExpressionSyntax GetSingle(ExpressionSyntax prefix)
+        {
+            return GetMultiple(prefix).First();
+        }
+
+        public static SeparatedSyntaxList<ExpressionSyntax> GetMultiple(ExpressionSyntax prefix)
+        {
+            var a = (prefix as ImplicitArrayCreationExpressionSyntax)?.Initializer.Expressions;
+            return a ?? SeparatedList(new[] { prefix });
+        }
+
+        public static ParenthesizedExpressionSyntax Paren(ExpressionSyntax value)
+        {
+            return ParenthesizedExpression(value);
+        }
+
+        public static PrefixUnaryExpressionSyntax Not(ExpressionSyntax value)
+        {
+            const SyntaxKind op = SyntaxKind.LogicalNotExpression;
+            return PrefixUnaryExpression(op, value);
         }
     }
 }
