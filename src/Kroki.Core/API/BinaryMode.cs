@@ -32,6 +32,10 @@
 
         Xor,
 
-        In
+        In,
+
+        GreaterEq,
+
+        Less
     }
 }

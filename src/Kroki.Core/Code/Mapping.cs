@@ -7,6 +7,16 @@ namespace Kroki.Core.Code
 {
     internal static class Mapping
     {
+        public static string ParseValue(AstNode node)
+        {
+            switch (node)
+            {
+                case Token { Type: TokenType.Number } to:
+                    return to.Text;
+            }
+            throw new InvalidOperationException($"{node} ({node.GetType()})");
+        }
+
         public static string ToCSharp(AstNode node)
         {
             switch (node)
@@ -104,6 +114,10 @@ namespace Kroki.Core.Code
                     return BinaryMode.ColonEq;
                 case TokenType.GreaterThan:
                     return BinaryMode.Greater;
+                case TokenType.GreaterOrEqual:
+                    return BinaryMode.GreaterEq;
+                case TokenType.LessThan:
+                    return BinaryMode.Less;
                 case TokenType.PlusSign:
                     return BinaryMode.Plus;
                 case TokenType.MinusSign:

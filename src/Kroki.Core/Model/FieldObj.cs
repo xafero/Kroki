@@ -1,4 +1,5 @@
 ﻿using Kroki.Core.API;
+using Kroki.Core.Code;
 using Kroki.Core.Util;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -21,10 +22,16 @@ namespace Kroki.Core.Model
         public bool IsReadOnly { get; set; }
         public string FieldType { get; set; }
         public string Name { get; }
+        public string? Value { get; set; }
 
         public override MemberDeclarationSyntax Create()
-            => FieldDeclaration(VariableDeclaration(ParseTypeName(FieldType))
-                    .AddVariables(VariableDeclarator(Name)))
+        {
+            var vd = VariableDeclarator(Name);
+            var eq = Value == null ? null : EqualsValueClause(Coding.ExprNum(Value));
+            if (eq != null)
+                vd = vd.WithInitializer(eq);
+            return FieldDeclaration(VariableDeclaration(ParseTypeName(FieldType)).AddVariables(vd))
                 .AddModifiers(Visibility.AsModifier(IsStatic, IsReadOnly));
+        }
     }
 }

@@ -25,7 +25,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DGrok.Framework", "..\dgrok
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{361DEE30-6C72-43BB-A57F-1C78909C5704}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Bulk", "try\Kroki.Bulk\Kroki.Bulk.csproj", "{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kroki.Bulk", "try\Kroki.Bulk\Kroki.Bulk.csproj", "{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Roslyn", "src\Kroki.Roslyn\Kroki.Roslyn.csproj", "{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -61,6 +63,10 @@ Global
 		{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -73,6 +79,7 @@ Global
 		{435151C9-6BB2-4BD6-953B-6F84203C2024} = {0C6649AD-DF33-4763-BDE8-C61D05B6D3DD}
 		{9465841E-C8CC-4F26-8DA5-00D68949301C} = {361DEE30-6C72-43BB-A57F-1C78909C5704}
 		{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33} = {A70E05D8-32FD-4A25-8751-BC8D0DD1FCB2}
+		{DBDA53F0-9D37-45D1-8B1D-B52312E3D306} = {5902BEC8-6C3D-4D73-8512-6A30BB1F0518}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D98FC31-042C-400C-9149-50E8761BB766}

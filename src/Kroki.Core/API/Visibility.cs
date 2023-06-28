@@ -2,7 +2,9 @@
 {
     public enum Visibility
     {
-        Public = 0,
+        None = 0,
+
+        Public,
 
         Protected,
 
