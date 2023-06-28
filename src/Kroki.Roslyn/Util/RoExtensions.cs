@@ -3,14 +3,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Kroki.Core.API;
-using Kroki.Core.Model;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Util

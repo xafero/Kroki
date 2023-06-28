@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace Kroki.Core.Code
 {
     public static class Values
