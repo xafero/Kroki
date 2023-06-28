@@ -3,7 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Core.API
 {
-    internal interface IHasMembers
+    public interface IHasMembers
     {
         List<CompileObj<MemberDeclarationSyntax>> Members { get; }
     }

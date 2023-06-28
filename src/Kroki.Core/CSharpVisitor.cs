@@ -7,8 +7,8 @@ using Kroki.Core.API;
 using Kroki.Core.Code;
 using Kroki.Core.Model;
 using Kroki.Core.Util;
+using Kroki.Roslyn.Code;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Kroki.Core.Code.Coding;
 
 namespace Kroki.Core
 {
@@ -86,7 +86,7 @@ namespace Kroki.Core
             var method = GenerateMethod(node.MethodHeadingNode);
 
             ClassObj clazz;
-            var nameParts = Extensions.SplitName(method.Name);
+            var nameParts = Names.SplitName(method.Name);
             if (nameParts is { } np && FindByName<ClassObj>(np.owner)
                     .FirstOrDefault() is { } fc)
             {
@@ -277,7 +277,7 @@ namespace Kroki.Core
             var left = bo.LeftNode.GetName();
             var owner = string.Empty;
             var method = left;
-            if (Extensions.SplitName(method) is { } sp)
+            if (Names.SplitName(method) is { } sp)
             {
                 owner = sp.owner;
                 method = sp.name;

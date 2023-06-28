@@ -1,6 +1,6 @@
 ﻿namespace Kroki.Core.API
 {
-    internal interface IHasName
+    public interface IHasName
     {
         string Name { get; }
     }
