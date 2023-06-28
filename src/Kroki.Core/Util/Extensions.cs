@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
-using Kroki.Core.API;
-using Kroki.Core.Model;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using static Kroki.Core.Code.Names;
 
 namespace Kroki.Core.Util
