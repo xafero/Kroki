@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Kroki.Core.API;
 using Kroki.Core.Model;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Core.Code
 {
@@ -24,6 +25,14 @@ namespace Kroki.Core.Code
                 foreach (var it in FindByName<T>(hm, name))
                     yield return it;
             }
+        }
+
+        public static void ReplaceIn<T>(this IList<T> list, T former, T replaced)
+            where T : CompileObj<MemberDeclarationSyntax>
+        {
+            var existIdx = list.IndexOf(former);
+            list.RemoveAt(existIdx);
+            list.Insert(existIdx, replaced);
         }
     }
 }

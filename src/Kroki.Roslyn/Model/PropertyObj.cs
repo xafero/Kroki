@@ -18,7 +18,7 @@ namespace Kroki.Core.Model
 
         public Visibility Visibility { get; set; }
         public bool IsStatic { get; set; }
-        public string PropType { get; }
+        public string PropType { get; set; }
         public string Name { get; }
 
         public override MemberDeclarationSyntax Create()

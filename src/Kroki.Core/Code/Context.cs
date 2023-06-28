@@ -1,4 +1,12 @@
-﻿namespace Kroki.Core.Code
+﻿using Kroki.Core.Model;
+
+namespace Kroki.Core.Code
 {
-    internal record Context(string? MethodName = null);
+    internal record Context(string? MethodName = null)
+    {
+        public static Context By(MethodObj method)
+        {
+            return new Context(method.Name);
+        }
+    }
 }

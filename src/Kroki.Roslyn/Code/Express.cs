@@ -149,10 +149,17 @@ namespace Kroki.Core.Code
 
         public static ArgumentSyntax Arg(ExpressionSyntax syntax) => Argument(syntax);
 
-        public static ExpressionSyntax Invoke(ExpressionSyntax owner, SimpleNameSyntax method,
+        public static ExpressionSyntax Invoke(ExpressionSyntax? owner, SimpleNameSyntax method,
             IEnumerable<ArgumentSyntax> args)
         {
-            var member = MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, owner, method);
+            ExpressionSyntax member = owner == null
+                ? method
+                : MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, owner, method);
+            return InvocationExpression(member, ArgumentList(SeparatedList(args)));
+        }
+
+        public static ExpressionSyntax Invoke(ExpressionSyntax member, IEnumerable<ArgumentSyntax> args)
+        {
             return InvocationExpression(member, ArgumentList(SeparatedList(args)));
         }
 
