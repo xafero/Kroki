@@ -163,6 +163,9 @@ namespace Kroki.Core
         private static IEnumerable<FieldObj> GenerateFields(VarSectionNode node)
             => CreateFields(node.VarListNode.Items);
 
+        private static IEnumerable<FieldObj> GenerateFields(ConstSectionNode node)
+            => CreateFields(node.ConstListNode.Items);
+
         private static IEnumerable<FieldObj> GenerateFields(MethodHeadingNode node)
             => CreateFields(node.ParameterListNode.Items.Select(i => i.ItemNode));
 
@@ -171,11 +174,14 @@ namespace Kroki.Core
         {
             foreach (var subNode in items)
             {
-                var subType = Mapping.ToCSharp(subNode.TypeNode);
+                var stn = subNode.TypeNode;
+                var subType = stn == null ? "object" : Mapping.ToCSharp(stn);
                 foreach (var subName in subNode.NameListNode.Items)
                 {
                     var subLabel = subName.ItemNode.Text;
-                    yield return new FieldObj(subLabel) { FieldType = subType };
+                    var subValue = (subNode as IHasTypeNameAndVal)?.ValueNode;
+                    var sharpVal = subValue == null ? null : Mapping.ParseValue(subValue);
+                    yield return new FieldObj(subLabel) { FieldType = subType, Value = sharpVal };
                 }
             }
         }
@@ -193,10 +199,26 @@ namespace Kroki.Core
                     return lna.Items.SelectMany(i => Read(i.ItemNode, ctx));
                 case BinaryOperationNode bo:
                     return Read(bo, ctx);
+                case UnaryOperationNode bo:
+                    return Read(bo, ctx);
                 case VarSectionNode vsn:
+                    return Read(vsn, ctx);
+                case ConstSectionNode vsn:
                     return Read(vsn, ctx);
                 case ForStatementNode fs:
                     return Read(fs, ctx);
+                case IfStatementNode ins:
+                    return Read(ins, ctx);
+                case TryFinallyNode tf:
+                    return Read(tf, ctx);
+                case WithStatementNode ws:
+                    return Read(ws, ctx);
+                case CaseStatementNode cs:
+                    return Read(cs, ctx);
+                case RepeatStatementNode rs:
+                    return Read(rs, ctx);
+                case WhileStatementNode ws:
+                    return Read(ws, ctx);
                 case ParameterizedNode pn:
                     return Read(pn, ctx);
                 case Token to:
@@ -213,7 +235,21 @@ namespace Kroki.Core
             throw new InvalidOperationException($"{ctx} --> {node} ({node?.ToCode()})");
         }
 
-        private static IEnumerable<StatementSyntax> Read(BinaryOperationNode bo, Context ctx)
+        private static IEnumerable<StatementSyntax> Read(BinaryOperationNode bo, Context _)
+        {
+            var ex = ReadEx(bo)!;
+            var stat = ex.AsStat();
+            yield return stat;
+        }
+
+        private static IEnumerable<StatementSyntax> Read(UnaryOperationNode bo, Context _)
+        {
+            var ex = ReadEx(bo)!;
+            var stat = ex.AsStat();
+            yield return stat;
+        }
+
+        private static IEnumerable<StatementSyntax> Read2(BinaryOperationNode bo, Context ctx)
         {
             var left = bo.LeftNode.GetName();
             var right = Mapping.PatchConstant(bo.RightNode.GetName());
@@ -259,6 +295,17 @@ namespace Kroki.Core
             yield return Invoke(owner, method, args);
         }
 
+        private static IEnumerable<StatementSyntax> Read(ConstSectionNode dvs, Context _)
+        {
+            foreach (var raw in GenerateFields(dvs))
+            {
+                var field = new ConstObj(raw);
+                var ft = field.FieldType;
+                var fv = field.Value!;
+                yield return Assign(ft, field.Name, fv, isConst: true);
+            }
+        }
+
         private static IEnumerable<StatementSyntax> Read(VarSectionNode dvs, Context _)
         {
             foreach (var field in GenerateFields(dvs))
@@ -276,6 +323,102 @@ namespace Kroki.Core
             var down = fs.DirectionNode.Type == TokenType.DownToKeyword;
             var s = Read(fs.StatementNode, ctx).ToList();
             yield return For(loop, start, end, down, s);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(IfStatementNode ins, Context ctx)
+        {
+            var cond = ReadEx(ins.ConditionNode)!;
+            var then = Read(ins.ThenStatementNode, ctx);
+            var en = ins.ElseStatementNode;
+            var @else = en == null ? null : Read(en, ctx);
+            yield return If(cond, then, @else);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(WhileStatementNode ws, Context ctx)
+        {
+            var cond = ReadEx(ws.ConditionNode)!;
+            var then = Read(ws.StatementNode, ctx);
+            yield return While(cond, then);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(RepeatStatementNode ws, Context ctx)
+        {
+            var cond = ReadEx(ws.ConditionNode)!;
+            var then = Read(ws.StatementListNode, ctx);
+            yield return Repeat(cond, then);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(TryFinallyNode tf, Context ctx)
+        {
+            var @try = Read(tf.TryStatementListNode, ctx);
+            var @finally = Read(tf.FinallyStatementListNode, ctx);
+            yield return Try(@try, @finally);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(WithStatementNode ws, Context ctx)
+        {
+            var expr = ReadEx(ws.ExpressionListNode)!;
+            var stat = Read(ws.StatementNode, ctx);
+            yield return With(expr, stat);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(CaseStatementNode ws, Context ctx)
+        {
+            var expr = ReadEx(ws.ExpressionNode)!;
+            var el = (v: ExprDefault(), c: Read(ws.ElseStatementListNode, ctx));
+            var sel = ws.SelectorListNode.Items.Select(s =>
+                (v: ReadEx(s.ValueListNode)!, c: Read(s.StatementNode, ctx)));
+            var all = sel.Concat(new[] { el }).ToArray();
+            yield return Switch(expr, all);
+        }
+
+        private static ExpressionSyntax? ReadEx(AstNode? node)
+        {
+            if (node == null)
+                return null;
+            switch (node)
+            {
+                case Token { Type: TokenType.Identifier } to:
+                    var txt = ExprStr(to.Text);
+                    return txt;
+                case Token { Type: TokenType.StringLiteral } sl:
+                    var sxt = ExprStr(sl.Text);
+                    return sxt;
+                case Token { Type: TokenType.Number } nl:
+                    var nxt = ExprNum(nl.Text);
+                    return nxt;
+                case Token { Type: TokenType.NilKeyword }:
+                    var xxt = ExprNull();
+                    return xxt;
+                case DelimitedItemNode<AstNode> da:
+                    return ReadEx(da.ItemNode);
+                case ListNode<DelimitedItemNode<AstNode>> lna:
+                    var lnaItems = lna.Items.Select(ReadEx).ToArray();
+                    return Array2(lnaItems);
+                case SetLiteralNode ln:
+                    var lnItems = ln.ItemListNode.Items.Select(ReadEx).ToArray();
+                    return Array2(lnItems);
+                case BinaryOperationNode bo:
+                    var bm = Mapping.ToBinary(bo.OperatorNode);
+                    var left = ReadEx(bo.LeftNode)!;
+                    var right = ReadEx(bo.RightNode)!;
+                    return Binary2(bm, left, right);
+                case UnaryOperationNode bo:
+                    var um = Mapping.ToUnary(bo.OperatorNode);
+                    var uLeft = ReadEx(bo.OperandNode)!;
+                    return Unary2(um, uLeft);
+                case ParenthesizedExpressionNode po:
+                    var core = ReadEx(po.ExpressionNode)!;
+                    return Paren(core);
+
+                case ParameterizedNode pt:
+                    // TODO Handle
+                    return ReadEx(pt.LeftNode);
+                case PointerDereferenceNode pn:
+                    // TODO Handle pointer
+                    return ReadEx(pn.OperandNode);
+            }
+            throw new InvalidOperationException($"{node} ({node.ToCode()})");
         }
 
         public override void VisitInitSectionNode(InitSectionNode node)
@@ -306,6 +449,21 @@ namespace Kroki.Core
             }
 
             base.VisitVarSectionNode(node);
+        }
+
+        public override void VisitConstSectionNode(ConstSectionNode node)
+        {
+            if (node.ParentNode.ParentNode is ProgramNode)
+            {
+                var clazz = RootNsp.Members.OfType<ClassObj>().First();
+                foreach (var field in GenerateFields(node))
+                {
+                    var co = new ConstObj(field);
+                    clazz.Members.Add(co);
+                }
+            }
+
+            base.VisitConstSectionNode(node);
         }
 
         public override void VisitTypeDeclNode(TypeDeclNode node)
@@ -366,6 +524,10 @@ namespace Kroki.Core
             object? debug = null;
             switch (node)
             {
+                case BinaryOperationNode bo:
+                    return Read(bo, new Context()).Arg();
+                case UnaryOperationNode bo:
+                    return Read(bo, new Context()).Arg();
                 case ParameterizedNode pn:
                     return Read(pn, new Context()).Arg();
                 case DelimitedItemNode<AstNode> dia:
