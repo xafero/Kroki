@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Kroki.Core.API;
-using Kroki.Core.Util;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Kroki.Core.Util.RoExtensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Code
@@ -48,8 +48,5 @@ namespace Kroki.Core.Code
                 return LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(sl));
             return IdentifierName(s);
         }
-
-        public static string? GetQuote(string text)
-            => text.StartsWith("'") && text.EndsWith("'") ? text.Trim('\'') : null;
     }
 }

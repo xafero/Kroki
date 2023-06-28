@@ -51,5 +51,8 @@ namespace Kroki.Core.Util
                 tok.Add(Token(SyntaxKind.ConstKeyword));
             return tok.ToArray();
         }
+
+        public static string? GetQuote(string text)
+            => text.StartsWith("'") && text.EndsWith("'") ? text.Trim('\'') : null;
     }
 }
