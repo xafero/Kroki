@@ -13,7 +13,7 @@ namespace Kroki.Example
         public void Button1Click(object Sender)
         {
             string s = default;
-            s = "Hello '+Edit1+' Delphi welcomes you!";
+            s = "Hello " + Edit1 + " Delphi welcomes you!";
             Console.WriteLine("s");
         }
 

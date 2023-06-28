@@ -10,6 +10,28 @@
 
         Divide,
 
-        BitAnd
+        BitAnd,
+
+        Dot,
+
+        ColonEq,
+
+        Greater,
+
+        Equal,
+
+        EqualNot,
+
+        And,
+
+        IntDiv,
+
+        Mod,
+
+        Or,
+
+        Xor,
+
+        In
     }
 }

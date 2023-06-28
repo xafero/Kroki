@@ -94,6 +94,54 @@ namespace Kroki.Core.Code
             throw new InvalidOperationException(visTxt);
         }
 
+        public static BinaryMode ToBinary(Token opToken)
+        {
+            switch (opToken.Type)
+            {
+                case TokenType.Dot:
+                    return BinaryMode.Dot;
+                case TokenType.ColonEquals:
+                    return BinaryMode.ColonEq;
+                case TokenType.GreaterThan:
+                    return BinaryMode.Greater;
+                case TokenType.PlusSign:
+                    return BinaryMode.Plus;
+                case TokenType.MinusSign:
+                    return BinaryMode.Minus;
+                case TokenType.EqualSign:
+                    return BinaryMode.Equal;
+                case TokenType.NotEqual:
+                    return BinaryMode.EqualNot;
+                case TokenType.AndKeyword:
+                    return BinaryMode.And;
+                case TokenType.OrKeyword:
+                    return BinaryMode.Or;
+                case TokenType.DivideBySign:
+                    return BinaryMode.Divide;
+                case TokenType.DivKeyword:
+                    return BinaryMode.IntDiv;
+                case TokenType.ModKeyword:
+                    return BinaryMode.Mod;
+                case TokenType.TimesSign:
+                    return BinaryMode.Multiply;
+                case TokenType.XorKeyword:
+                    return BinaryMode.Xor;
+                case TokenType.InKeyword:
+                    return BinaryMode.In;
+            }
+            throw new InvalidOperationException(opToken.ToString());
+        }
+
+        public static UnaryMode ToUnary(Token opToken)
+        {
+            switch (opToken.Type)
+            {
+                case TokenType.NotKeyword:
+                    return UnaryMode.Not;
+            }
+            throw new InvalidOperationException(opToken.ToString());
+        }
+
         public static string GetDefault(string type)
         {
             return "default";
