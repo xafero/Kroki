@@ -5,6 +5,7 @@ using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Util;
 using Kroki.Roslyn.API;
+using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 
 namespace Kroki.Core.Code
@@ -55,6 +56,7 @@ namespace Kroki.Core.Code
         private static IEnumerable<FieldObj> CreateFields<T>(IEnumerable<T> items)
             where T : IHasTypeAndName
         {
+            var ctx = new Context();
             foreach (var subNode in items)
             {
                 var stn = subNode.TypeNode;
@@ -63,7 +65,7 @@ namespace Kroki.Core.Code
                 {
                     var subLabel = subName.ItemNode.Text;
                     var subValue = (subNode as IHasTypeNameAndVal)?.ValueNode;
-                    var sharpVal = subValue == null ? null : Mapping.ParseValue(subValue);
+                    var sharpVal = subValue == null ? null : Extended.ReadEx(subValue, ctx);
                     yield return new FieldObj(subLabel) { FieldType = subType, Value = sharpVal };
                 }
             }

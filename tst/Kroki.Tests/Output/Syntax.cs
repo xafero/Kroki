@@ -259,10 +259,10 @@ namespace Kroki.Example
         public static void DoValues()
         {
             int a = default;
-            float b = default;
-            float c = default;
-            double d = default;
-            long e = default;
+            float b = 2.3;
+            float c = 4.1334;
+            double d = 5.45;
+            decimal e = 92922233;
             bool f = default;
             f = true;
             a = 1;
@@ -347,7 +347,7 @@ namespace Kroki.Example
             Console.ReadLine();
         }
 
-        public static uint DoRetrieve()
+        public static long DoRetrieve()
         {
             const int const1 = 12;
             int var1 = default;

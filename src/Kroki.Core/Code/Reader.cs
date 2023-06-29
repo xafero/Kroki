@@ -173,7 +173,8 @@ namespace Kroki.Core.Code
             foreach (var field in dvs.GenerateFields())
             {
                 var ft = field.FieldType;
-                yield return Assign(ft, field.Name, Mapping.GetDefault(ft));
+                var vt = field.Value ?? Mapping.GetDefault(ft);
+                yield return Assign(ft, field.Name, vt);
             }
         }
     }

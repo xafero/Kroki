@@ -43,17 +43,38 @@ namespace Kroki.Core.Code
         {
             switch (typeName)
             {
+                case "NativeInt":
+                case "LongInt":
+                case "Int64":
+                    return "long";
+                case "LongWord":
+                case "NativeUInt":
+                case "UInt64":
+                    return "ulong";
+                case "ShortInt":
+                    return "sbyte";
+                case "Word":
+                    return "ushort";
+                case "Byte":
+                    return "byte";
+                case "SmallInt":
+                    return "short";
                 case "Boolean":
                 case "boolean":
+                case "ByteBool":
+                case "LongBool":
                 case "WordBool":
                     return "bool";
+                case "Cardinal":
+                case "FixedUInt":
+                    return "uint";
+                case "FixedInt":
                 case "Integer":
                 case "integer":
                     return "int";
-                case "LongWord":
-                case "LongInt":
-                    return "uint";
                 case "Currency":
+                case "Extended":
+                case "Comp":
                     return "decimal";
                 case "Char":
                     return "char";
@@ -63,13 +84,16 @@ namespace Kroki.Core.Code
                     return "float";
                 case "Double":
                     return "double";
-                case "Extended":
-                    return "long";
                 case "TDateTime":
                     return "DateTime";
                 case "HResult":
                     return "IntPtr";
+                case "UnicodeString":
+                case "AnsiChar":
                 case "WideString":
+                case "WideChar":
+                case "UCS2Char":
+                case "UCS4Char":
                 case "String":
                 case "string":
                     return "string";

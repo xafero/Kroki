@@ -306,8 +306,8 @@ namespace Kroki.Example
 
         public void FormMouseWheel(object Sender, TShiftState Shift, int WheelDelta, TPoint MousePos, bool Handled)
         {
-            Cardinal msg = default;
-            Cardinal code = default;
+            uint msg = default;
+            uint code = default;
             int i = default;
             int n = default;
             TPoint CPos = default;
