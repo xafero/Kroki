@@ -13,18 +13,28 @@ namespace Kroki.Core.Util
     {
         public static ExpressionSyntax? ReadEx(AstNode? node, Context ctx)
         {
+            if (node == null)
+                return null;
             switch (node)
             {
                 case Token { Type: TokenType.Identifier } to:
                     return ReadEx(to, ctx);
                 case Token { Type: TokenType.StringLiteral } to:
                     return AsTextValue(to.Text);
+                case Token { Type: TokenType.Number } to:
+                    return AsNumberValue(to.Text);
+                case Token { Type: TokenType.NilKeyword }:
+                    return NullValue();
                 case DelimitedItemNode<AstNode> da:
                     return ReadEx(da.ItemNode, ctx);
                 case BinaryOperationNode bo:
                     return ReadEx(bo, ctx);
+                case UnaryOperationNode uo:
+                    return ReadEx(uo, ctx);
                 case ParenthesizedExpressionNode po:
                     return ReadEx(po, ctx);
+                case ParameterizedNode pn:
+                    return ReadEx(pn, ctx);
                 case SetLiteralNode ln:
                     return ReadEx(ln, ctx);
                 case ListNode<DelimitedItemNode<AstNode>> lna:
@@ -44,6 +54,11 @@ namespace Kroki.Core.Util
                 case "True": return AsBoolValue(true);
             }
             return IdentifierName(txt);
+        }
+
+        private static ExpressionSyntax ReadEx(ParameterizedNode pn, Context ctx)
+        {
+            throw new NotImplementedException(); // TODO
         }
 
         private static ExpressionSyntax ReadEx(ListNode<DelimitedItemNode<AstNode>> lna, Context ctx)
