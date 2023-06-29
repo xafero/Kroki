@@ -354,5 +354,39 @@ namespace Kroki.Example
             Console.ReadLine(var1);
             return var1 + const1;
         }
+
+        private static void Main(string[] args)
+        {
+            Console.WriteLine("Hello World");
+            {
+                Record1.Year = 1922;
+                Record1.Month = Nov;
+                Record1.Day = 26;
+            }
+
+            Console.WriteLine("How old are you?");
+            Console.ReadLine(age);
+            Console.Write("Allowed to play: ");
+            Console.WriteLine((23 < age) && (age > 52));
+            if (a == false)
+            {
+                Console.WriteLine("a is false");
+            }
+            else
+            {
+                Console.WriteLine("a is true");
+            }
+
+            Console.WriteLine("Do you want to order a pizza?");
+            Console.ReadLine(_Answer);
+            if (_Answer == "Yes")
+            {
+                Console.WriteLine("You decided for yes!");
+            }
+            else
+            {
+                Console.WriteLine("Don''t want to have a pizza?");
+            }
+        }
     }
 }

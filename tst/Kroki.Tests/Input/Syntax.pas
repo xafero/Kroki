@@ -350,7 +350,7 @@ begin
   WriteLn ('How old are you?');
   ReadLn (age);
   Write ('Allowed to play: ');
-  WriteLn ((3 < age) and (age > 12)); // Display "Allowed to play: True" or "Allowed to play: False"
+  WriteLn ((23 < age) and (age > 52)); // Display "Allowed to play: True" or "Allowed to play: False"
 
   if a = False then
      WriteLn('a is false')

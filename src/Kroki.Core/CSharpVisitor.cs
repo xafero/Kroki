@@ -8,6 +8,7 @@ using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using static Kroki.Core.Code.Reader;
+using System.Security.Claims;
 
 namespace Kroki.Core
 {
@@ -115,14 +116,19 @@ namespace Kroki.Core
 
         public override void VisitInitSectionNode(InitSectionNode node)
         {
-            if (node.ParentNode is ProgramNode)
+            var block = node.InitializationStatementListNode;
+            var method = Prebuilt.CreateMain();
+            foreach (var stat in Read(block, Context.By(method)))
+                method.Statements.Add(stat);
+
+            if (method.Statements.Count >= 1)
             {
-                var clazz = RootNsp.Members.OfType<ClassObj>().First();
-                var method = Prebuilt.CreateMain();
-                var block = node.InitializationStatementListNode;
-                foreach (var stat in Read(block, Context.By(method)))
-                    method.Statements.Add(stat);
-                clazz.Members.Add(method);
+                ClassObj? clazz = null;
+                if (node.ParentNode is ProgramNode)
+                    clazz = RootNsp.Members.OfType<ClassObj>().First();
+                else if (node.ParentNode is UnitNode)
+                    clazz = GetUnitClass();
+                clazz?.Members.Add(method);
             }
 
             base.VisitInitSectionNode(node);
