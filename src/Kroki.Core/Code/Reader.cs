@@ -11,7 +11,6 @@ using static Kroki.Core.Util.Extended;
 using static Kroki.Roslyn.Code.Construct;
 using Arr = System.Array;
 using Kroki.Roslyn.API;
-using System.Security.Claims;
 
 namespace Kroki.Core.Code
 {
