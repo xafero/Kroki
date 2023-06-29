@@ -37,7 +37,13 @@ namespace Kroki.Core.Util
 
         private static ExpressionSyntax ReadEx(Token to, Context ctx)
         {
-            return IdentifierName(to.Text);
+            var txt = to.Text;
+            switch (txt)
+            {
+                case "False": return AsBoolValue(false);
+                case "True": return AsBoolValue(true);
+            }
+            return IdentifierName(txt);
         }
 
         private static ExpressionSyntax ReadEx(ListNode<DelimitedItemNode<AstNode>> lna, Context ctx)
