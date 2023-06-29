@@ -36,6 +36,10 @@
 
         GreaterEq,
 
-        Less
+        Less,
+
+        Is,
+
+        LessEq
     }
 }

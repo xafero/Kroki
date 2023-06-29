@@ -55,12 +55,12 @@ namespace Kroki.Example
             r1.setwidth(7);
             Console.WriteLine("Draw a rectangle:", r1.getlength(), " by ", r1.getwidth());
             r1.draw();
-            Compat.Renew("pr1");
+            Compat.Renew(pr1);
             pr1.setlength(5);
             pr1.setwidth(4);
             Console.WriteLine("Draw a rectangle:", pr1.getlength(), " by ", pr1.getwidth());
             pr1.draw();
-            Compat.Dispose("pr1");
+            Compat.Dispose(pr1);
         }
     }
 }

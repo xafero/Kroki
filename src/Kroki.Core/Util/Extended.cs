@@ -58,7 +58,21 @@ namespace Kroki.Core.Util
 
         private static ExpressionSyntax ReadEx(ParameterizedNode pn, Context ctx)
         {
-            throw new NotImplementedException(); // TODO
+            var left = Patch(pn.LeftNode, ctx);
+            var prm = pn.ParameterListNode;
+            var args = prm.Items.Select(p => ReadEx(p, ctx)!.Arg()).ToArray();
+            var item = Invoke(left, args);
+            return item;
+        }
+
+        internal static ExpressionSyntax Patch(AstNode pn, Context ctx)
+        {
+            var left = ReadEx(pn, ctx)!;
+            if (pn.GetText() is var leftName && Mapping.Replace(leftName) is { } p)
+            {
+                left = Access(Name(p.owner), Name(p.method));
+            }
+            return left;
         }
 
         private static ExpressionSyntax ReadEx(ListNode<DelimitedItemNode<AstNode>> lna, Context ctx)

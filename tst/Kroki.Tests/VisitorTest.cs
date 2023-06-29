@@ -8,7 +8,7 @@ namespace Kroki.Tests
 {
     public class VisitorTest
     {
-        [Fact(Skip = "Too many parser errors!")]
+        [Fact]
         public void ConvertCenterMain()
         {
             ParseAndCheck("CenterMainWnd");
@@ -38,7 +38,7 @@ namespace Kroki.Tests
             ParseAndCheck("SmForm");
         }
 
-        [Fact(Skip = "Ignore parser for now!")]
+        [Fact]
         public void ConvertSyntax()
         {
             ParseAndCheck("Syntax");

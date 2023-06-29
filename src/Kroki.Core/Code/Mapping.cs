@@ -118,6 +118,8 @@ namespace Kroki.Core.Code
                     return BinaryMode.GreaterEq;
                 case TokenType.LessThan:
                     return BinaryMode.Less;
+                case TokenType.LessOrEqual:
+                    return BinaryMode.LessEq;
                 case TokenType.PlusSign:
                     return BinaryMode.Plus;
                 case TokenType.MinusSign:
@@ -142,6 +144,8 @@ namespace Kroki.Core.Code
                     return BinaryMode.Xor;
                 case TokenType.InKeyword:
                     return BinaryMode.In;
+                case TokenType.IsKeyword:
+                    return BinaryMode.Is;
             }
             throw new InvalidOperationException(opToken.ToString());
         }
@@ -152,6 +156,8 @@ namespace Kroki.Core.Code
             {
                 case TokenType.NotKeyword:
                     return UnaryMode.Not;
+                case TokenType.MinusSign:
+                    return UnaryMode.Minus;
             }
             throw new InvalidOperationException(opToken.ToString());
         }

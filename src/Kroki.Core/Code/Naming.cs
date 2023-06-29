@@ -46,6 +46,12 @@ namespace Kroki.Core.Code
                     return to.Text;
                 case BinaryOperationNode bo:
                     return GetText(bo);
+                case ParameterizedNode pn:
+                    return GetText(pn.LeftNode);
+                case ParenthesizedExpressionNode en:
+                    return GetText(en.ExpressionNode);
+                case PointerDereferenceNode dn:
+                    return GetText(dn.OperandNode);
             }
             throw new InvalidOperationException($"{node} ?!");
         }

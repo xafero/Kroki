@@ -63,6 +63,9 @@ namespace Kroki.Roslyn.Code
                 case UnaryMode.Not:
                     op = SyntaxKind.LogicalNotExpression;
                     break;
+                case UnaryMode.Minus:
+                    op = SyntaxKind.UnaryMinusExpression;
+                    break;
                 default:
                     throw new InvalidOperationException($"{bm} ?!");
             }
@@ -113,11 +116,17 @@ namespace Kroki.Roslyn.Code
                 case BinaryMode.Less:
                     op = SyntaxKind.LessThanExpression;
                     break;
+                case BinaryMode.LessEq:
+                    op = SyntaxKind.LessThanOrEqualExpression;
+                    break;
                 case BinaryMode.Equal:
                     op = SyntaxKind.EqualsExpression;
                     break;
                 case BinaryMode.EqualNot:
                     op = SyntaxKind.NotEqualsExpression;
+                    break;
+                case BinaryMode.Is:
+                    op = SyntaxKind.IsExpression;
                     break;
 
                 case BinaryMode.In:

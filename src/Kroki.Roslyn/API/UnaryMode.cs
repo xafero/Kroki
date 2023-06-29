@@ -2,6 +2,8 @@
 {
     public enum UnaryMode
     {
-        Not = 0
+        Not = 0,
+
+        Minus
     }
 }

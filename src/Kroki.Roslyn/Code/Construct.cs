@@ -86,6 +86,10 @@ namespace Kroki.Roslyn.Code
                         return aas.AsStat();
                     var upd = aes.WithLeft(Access(p, l));
                     return upd.AsStat();
+                case IfStatementSyntax iss:
+                    return iss;
+                case SwitchStatementSyntax iss:
+                    return iss;
             }
             throw new InvalidOperationException($"{prefix} / {statement} ({statement.GetType()}) ?");
         }

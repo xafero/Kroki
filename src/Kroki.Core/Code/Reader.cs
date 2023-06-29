@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;
 using static Kroki.Roslyn.Code.Construct;
+using Arr = System.Array;
 
 namespace Kroki.Core.Code
 {
@@ -16,6 +17,8 @@ namespace Kroki.Core.Code
     {
         public static IEnumerable<StatementSyntax> Read(AstNode? node, Context ctx)
         {
+            if (node == null)
+                return Arr.Empty<StatementSyntax>();
             switch (node)
             {
                 case FancyBlockNode fn:
@@ -53,35 +56,22 @@ namespace Kroki.Core.Code
                     return Read(to, ctx);
                 case Token { Type: TokenType.BeginKeyword }:
                 case Token { Type: TokenType.EndKeyword }:
-                    return System.Array.Empty<StatementSyntax>();
+                    return Arr.Empty<StatementSyntax>();
             }
             throw new InvalidOperationException($"{ctx} --> {node} ({node?.ToCode()})");
         }
 
         private static IEnumerable<StatementSyntax> Read(Token token, Context ctx)
         {
-            var method = ReadEx(token, ctx)!;
-            var args = System.Array.Empty<ArgumentSyntax>();
+            var method = Patch(token, ctx);
+            var args = Arr.Empty<ArgumentSyntax>();
             yield return Invoke(method, args).AsStat();
         }
 
         private static IEnumerable<StatementSyntax> Read(ParameterizedNode pn, Context ctx)
         {
-            var left = Patch(pn.LeftNode, ctx);
-            var prm = pn.ParameterListNode;
-            var args = prm.Items.Select(p => ReadEx(p, ctx)!.Arg()).ToArray();
-            var item = Invoke(left, args);
-            yield return item.AsStat();
-        }
-
-        private static ExpressionSyntax Patch(AstNode pn, Context ctx)
-        {
-            var left = ReadEx(pn, ctx)!;
-            if (pn.GetText() is var leftName && Mapping.Replace(leftName) is { } p)
-            {
-                left = Access(Name(p.owner), Name(p.method));
-            }
-            return left;
+            var stat = ReadEx(pn, ctx)!;
+            yield return stat.AsStat();
         }
 
         private static IEnumerable<StatementSyntax> Read(WhileStatementNode ws, Context ctx)
@@ -162,8 +152,8 @@ namespace Kroki.Core.Code
                 yield return s;
                 yield break;
             }
-            var ex = ReadEx(bo, ctx)!;
-            var stat = ex.AsStat();
+            var ex = ReadEx(bo, ctx);
+            var stat = Invoke(ex, Arr.Empty<ArgumentSyntax>()).AsStat();
             yield return stat;
         }
 
