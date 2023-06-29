@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using DGrok.Framework;
 using System.Linq;
 using DGrok.DelphiNodes;
-using Kroki.Core.API;
 using Kroki.Core.Code;
-using Kroki.Core.Model;
+using Kroki.Roslyn.API;
+using Kroki.Roslyn.Code;
+using Kroki.Roslyn.Model;
 using static Kroki.Core.Code.Reader;
 
 namespace Kroki.Core

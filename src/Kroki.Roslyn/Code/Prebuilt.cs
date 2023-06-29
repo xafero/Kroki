@@ -1,7 +1,7 @@
-using Kroki.Core.API;
-using Kroki.Core.Model;
+using Kroki.Roslyn.API;
+using Kroki.Roslyn.Model;
 
-namespace Kroki.Core.Code
+namespace Kroki.Roslyn.Code
 {
     public static class Prebuilt
     {

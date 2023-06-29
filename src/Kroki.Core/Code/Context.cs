@@ -1,4 +1,4 @@
-﻿using Kroki.Core.Model;
+﻿using Kroki.Roslyn.Model;
 
 namespace Kroki.Core.Code
 {

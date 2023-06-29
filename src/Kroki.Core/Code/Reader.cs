@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
-using Kroki.Core.Model;
 using Kroki.Roslyn.Code;
+using Kroki.Roslyn.Model;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Kroki.Core.Code.Express;
+using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;
 using static Kroki.Roslyn.Code.Construct;
 

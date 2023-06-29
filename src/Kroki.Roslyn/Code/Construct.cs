@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Kroki.Core.Code.Express;
+using static Kroki.Roslyn.Code.Express;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Roslyn.Code

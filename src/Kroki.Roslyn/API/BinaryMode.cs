@@ -1,4 +1,4 @@
-﻿namespace Kroki.Core.API
+﻿namespace Kroki.Roslyn.API
 {
     public enum BinaryMode
     {

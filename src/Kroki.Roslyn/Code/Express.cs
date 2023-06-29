@@ -1,14 +1,14 @@
 using System;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.Linq;
-using Kroki.Core.API;
-using static Kroki.Core.Util.RoExtensions;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using Kroki.Roslyn.API;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Kroki.Roslyn.Util.RoExtensions;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Kroki.Core.Code
+namespace Kroki.Roslyn.Code
 {
     public static class Express
     {

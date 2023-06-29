@@ -1,6 +1,6 @@
 using System;
 
-namespace Kroki.Core.Code
+namespace Kroki.Roslyn.Code
 {
     public static class Names
     {

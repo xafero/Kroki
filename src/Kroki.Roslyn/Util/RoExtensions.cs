@@ -1,11 +1,11 @@
-using Kroki.Core.API;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
+using Kroki.Roslyn.API;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace Kroki.Core.Util
+namespace Kroki.Roslyn.Util
 {
     public static class RoExtensions
     {

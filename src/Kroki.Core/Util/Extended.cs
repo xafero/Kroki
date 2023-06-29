@@ -4,7 +4,7 @@ using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Code;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using static Kroki.Core.Code.Express;
+using static Kroki.Roslyn.Code.Express;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Core.Util
