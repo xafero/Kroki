@@ -7,7 +7,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Roslyn.Model
 {
-    public sealed class MethodObj : CompileObj<MemberDeclarationSyntax>, IHasName
+    public sealed class MethodObj : CompileObj<MemberDeclarationSyntax>, IHasName, IHasParams
     {
         public MethodObj(string name)
         {

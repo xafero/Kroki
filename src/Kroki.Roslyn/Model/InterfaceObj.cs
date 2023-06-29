@@ -6,23 +6,22 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Roslyn.Model
 {
-    public sealed class ClassObj : CompileObj<MemberDeclarationSyntax>, ITypeDef
+    public sealed class InterfaceObj : CompileObj<MemberDeclarationSyntax>, ITypeDef
     {
-        public ClassObj(string name)
+        public InterfaceObj(string name)
         {
             Visibility = Visibility.Public;
-            IsStatic = false;
             Name = name;
             Members = new List<CompileObj<MemberDeclarationSyntax>>();
         }
 
         public Visibility Visibility { get; set; }
-        public bool IsStatic { get; set; }
         public string Name { get; }
         public List<CompileObj<MemberDeclarationSyntax>> Members { get; }
 
         public override MemberDeclarationSyntax Create()
-            => ClassDeclaration(Identifier(Name)).AddModifiers(Visibility.AsModifier(IsStatic))
+            => InterfaceDeclaration(Identifier(Name))
+                .AddModifiers(Visibility.AsModifier())
                 .AddMembers(Members.AsArray());
     }
 }

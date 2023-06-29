@@ -8,7 +8,6 @@ using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using static Kroki.Core.Code.Reader;
-using System.Security.Claims;
 
 namespace Kroki.Core
 {

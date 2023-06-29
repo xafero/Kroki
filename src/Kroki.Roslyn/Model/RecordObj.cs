@@ -1,28 +1,31 @@
 ﻿using System.Collections.Generic;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Util;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Kroki.Roslyn.Model
 {
-    public sealed class ClassObj : CompileObj<MemberDeclarationSyntax>, ITypeDef
+    public sealed class RecordObj : CompileObj<MemberDeclarationSyntax>, ITypeDef, IHasParams
     {
-        public ClassObj(string name)
+        public RecordObj(string name)
         {
             Visibility = Visibility.Public;
-            IsStatic = false;
             Name = name;
+            Params = new List<CompileObj<ParameterSyntax>>();
             Members = new List<CompileObj<MemberDeclarationSyntax>>();
         }
 
         public Visibility Visibility { get; set; }
-        public bool IsStatic { get; set; }
         public string Name { get; }
+        public List<CompileObj<ParameterSyntax>> Params { get; }
         public List<CompileObj<MemberDeclarationSyntax>> Members { get; }
 
         public override MemberDeclarationSyntax Create()
-            => ClassDeclaration(Identifier(Name)).AddModifiers(Visibility.AsModifier(IsStatic))
+            => RecordDeclaration(Token(SyntaxKind.RecordKeyword), Identifier(Name))
+                .AddModifiers(Visibility.AsModifier())
+                .AddParameterListParameters(Params.AsArray())
                 .AddMembers(Members.AsArray());
     }
 }

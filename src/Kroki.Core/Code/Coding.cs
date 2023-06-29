@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
+using Kroki.Core.Util;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Model;
 
@@ -79,6 +80,9 @@ namespace Kroki.Core.Code
                     break;
                 case RecordTypeNode rtn:
                     GenerateRecord(rtn, tClazz);
+                    break;
+                case EnumeratedTypeNode etn:
+                    GenerateEnumerated(etn, tClazz);
                     break;
                 default:
                     throw new InvalidOperationException($"{node.TypeNode} ?!");
