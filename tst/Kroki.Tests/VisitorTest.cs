@@ -44,6 +44,12 @@ namespace Kroki.Tests
             ParseAndCheck("Syntax");
         }
 
+        [Fact]
+        public void ConvertTyping()
+        {
+            ParseAndCheck("Typing");
+        }
+
         private static void ParseAndCheck(string name, string ext = "pas")
         {
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;

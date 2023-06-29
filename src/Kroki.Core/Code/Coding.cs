@@ -69,31 +69,43 @@ namespace Kroki.Core.Code
             }
         }
 
-        public static ClassObj GenerateClass(TypeDeclNode node)
+        public static ITypedDef GenerateClass(TypeDeclNode node)
         {
-            var tName = node.NameNode.Text;
-            var tClazz = new ClassObj(tName);
+            var name = node.NameNode.Text;
             switch (node.TypeNode)
             {
                 case ClassTypeNode ctn:
-                    GenerateClass(ctn, tClazz);
-                    break;
+                    var clazz = new ClassObj(name);
+                    GenerateClass(ctn, clazz);
+                    return clazz;
                 case RecordTypeNode rtn:
-                    GenerateRecord(rtn, tClazz);
-                    break;
+                    var rec = new ClassObj(name);
+                    GenerateRecord(rtn, rec);
+                    return rec;
                 case EnumeratedTypeNode etn:
-                    GenerateEnumerated(etn, tClazz);
-                    break;
-                default:
-                    throw new InvalidOperationException($"{node.TypeNode} ?!");
+                    var enm = new EnumObj(name);
+                    GenerateEnumerated(etn, enm);
+                    return enm;
             }
-            return tClazz;
+            throw new InvalidOperationException($"{node.TypeNode} ?!");
         }
 
         private static Visibility GetVis(VisibilityNode? visNode)
         {
             var vis = visNode == null ? Visibility.Public : Mapping.ToCSharp(visNode);
             return vis;
+        }
+
+        private static void GenerateEnumerated(EnumeratedTypeNode etn, EnumObj clazz)
+        {
+            foreach (var cln in etn.ItemListNode.Items)
+            {
+                var item = cln.ItemNode;
+                var key = item.NameNode.GetText();
+                var val = Extended.ReadEx(item.ValueNode, new Context());
+                var ev = new EnumValObj(key) { Value = val };
+                clazz.Values.Add(ev);
+            }
         }
 
         private static void GenerateRecord(RecordTypeNode rtn, ClassObj clazz)

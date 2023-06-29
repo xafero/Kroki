@@ -8,6 +8,7 @@ using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using static Kroki.Core.Code.Reader;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Core
 {
@@ -165,7 +166,8 @@ namespace Kroki.Core
 
         public override void VisitTypeDeclNode(TypeDeclNode node)
         {
-            var clazz = Coding.GenerateClass(node);
+            var raw = Coding.GenerateClass(node);
+            var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
 
             var inPro = node.ParentNode.ParentNode.ParentNode.ParentNode is ProgramNode;
             if (inPro)
