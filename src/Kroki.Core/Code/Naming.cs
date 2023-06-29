@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DGrok.DelphiNodes;
+using DGrok.Framework;
 using Kroki.Core.API;
 using Kroki.Core.Model;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -33,6 +35,25 @@ namespace Kroki.Core.Code
             var existIdx = list.IndexOf(former);
             list.RemoveAt(existIdx);
             list.Insert(existIdx, replaced);
+        }
+
+        public static string GetText(this AstNode? node)
+        {
+            switch (node)
+            {
+                case Token { Type: TokenType.Identifier } to:
+                    return to.Text;
+                case BinaryOperationNode bo:
+                    return GetText(bo);
+            }
+            throw new InvalidOperationException($"{node} ?!");
+        }
+
+        private static string GetText(BinaryOperationNode bo)
+        {
+            var left = bo.LeftNode.GetText();
+            var right = bo.RightNode.GetText();
+            return Names.CombineName(left, right)!;
         }
     }
 }

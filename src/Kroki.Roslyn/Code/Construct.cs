@@ -104,6 +104,17 @@ namespace Kroki.Roslyn.Code
             return For(ini, cond, inc, statements);
         }
 
+        public static StatementSyntax For(ExpressionSyntax loop, ExpressionSyntax start,
+            ExpressionSyntax end, bool isDown, IEnumerable<StatementSyntax> statements)
+        {
+            var ini = AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, loop, start);
+            var kind = isDown ? SyntaxKind.GreaterThanOrEqualExpression : SyntaxKind.LessThanOrEqualExpression;
+            var cond = BinaryExpression(kind, loop, end);
+            var mode = isDown ? SyntaxKind.PostDecrementExpression : SyntaxKind.PostIncrementExpression;
+            var post = PostfixUnaryExpression(mode, loop);
+            return For(ini, cond, post, statements);
+        }
+
         public static ForStatementSyntax For(ExpressionSyntax init, ExpressionSyntax cond, ExpressionSyntax post,
             IEnumerable<StatementSyntax> s, VariableDeclarationSyntax? declaration = null)
         {

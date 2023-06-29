@@ -6,7 +6,6 @@ using DGrok.DelphiNodes;
 using Kroki.Core.API;
 using Kroki.Core.Code;
 using Kroki.Core.Model;
-using Kroki.Core.Util;
 using static Kroki.Core.Code.Reader;
 
 namespace Kroki.Core
@@ -55,7 +54,7 @@ namespace Kroki.Core
 
         public override void VisitUnitNode(UnitNode node)
         {
-            var name = node.UnitNameNode.GetName();
+            var name = node.UnitNameNode.GetText();
             var nameSp = new NamespaceObj(name);
             _nspAll.Add(nameSp);
 

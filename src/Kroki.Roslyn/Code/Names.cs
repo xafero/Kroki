@@ -13,5 +13,12 @@ namespace Kroki.Core.Code
                 return (t[0], t[1]);
             return null;
         }
+
+        public static string? CombineName(string owner, string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+            return string.IsNullOrWhiteSpace(owner) ? name : owner + NameSep + name;
+        }
     }
 }

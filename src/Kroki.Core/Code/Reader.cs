@@ -4,7 +4,7 @@ using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Model;
-using Kroki.Core.Util;
+using Kroki.Roslyn.Code;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Core.Code.Express;
 using static Kroki.Core.Util.Extended;
@@ -58,52 +58,56 @@ namespace Kroki.Core.Code
             throw new InvalidOperationException($"{ctx} --> {node} ({node?.ToCode()})");
         }
 
-        private static IEnumerable<StatementSyntax> Read(Token token, Context _)
+        private static IEnumerable<StatementSyntax> Read(Token token, Context ctx)
         {
-            var method = ReadEx(token)!;
+            var method = ReadEx(token, ctx)!;
             var args = System.Array.Empty<ArgumentSyntax>();
             yield return Invoke(method, args).AsStat();
         }
 
         private static IEnumerable<StatementSyntax> Read(ParameterizedNode pn, Context ctx)
         {
-            throw new NotImplementedException();
+            var left = ReadEx(pn.LeftNode, ctx)!;
+            var prm = pn.ParameterListNode;
+            var args = prm.Items.Select(p => ReadEx(p, ctx)!.Arg()).ToArray();
+            var item = Invoke(left, args);
+            yield return item.AsStat();
         }
 
         private static IEnumerable<StatementSyntax> Read(WhileStatementNode ws, Context ctx)
         {
-            var cond = ReadEx(ws.ConditionNode)!;
+            var cond = ReadEx(ws.ConditionNode, ctx)!;
             var then = Read(ws.StatementNode, ctx);
             yield return While(cond, then);
         }
 
         private static IEnumerable<StatementSyntax> Read(RepeatStatementNode ws, Context ctx)
         {
-            var cond = ReadEx(ws.ConditionNode)!;
+            var cond = ReadEx(ws.ConditionNode, ctx)!;
             var then = Read(ws.StatementListNode, ctx);
             yield return Repeat(cond, then);
         }
 
         private static IEnumerable<StatementSyntax> Read(CaseStatementNode ws, Context ctx)
         {
-            var expr = ReadEx(ws.ExpressionNode)!;
+            var expr = ReadEx(ws.ExpressionNode, ctx)!;
             var el = (v: DefaultValue(), c: Read(ws.ElseStatementListNode, ctx));
             var sel = ws.SelectorListNode.Items.Select(s =>
-                (v: ReadEx(s.ValueListNode)!, c: Read(s.StatementNode, ctx)));
+                (v: ReadEx(s.ValueListNode, ctx)!, c: Read(s.StatementNode, ctx)));
             var all = sel.Concat(new[] { el }).ToArray();
             yield return Switch(expr, all);
         }
 
         private static IEnumerable<StatementSyntax> Read(WithStatementNode ws, Context ctx)
         {
-            var expr = ReadEx(ws.ExpressionListNode)!;
+            var expr = ReadEx(ws.ExpressionListNode, ctx)!;
             var stat = Read(ws.StatementNode, ctx);
             yield return With(expr, stat);
         }
 
         private static IEnumerable<StatementSyntax> Read(IfStatementNode ins, Context ctx)
         {
-            var cond = ReadEx(ins.ConditionNode)!;
+            var cond = ReadEx(ins.ConditionNode, ctx)!;
             var then = Read(ins.ThenStatementNode, ctx);
             var en = ins.ElseStatementNode;
             var @else = en == null ? null : Read(en, ctx);
@@ -119,19 +123,36 @@ namespace Kroki.Core.Code
 
         private static IEnumerable<StatementSyntax> Read(ForStatementNode fs, Context ctx)
         {
-            throw new NotImplementedException();
+            var loop = ReadEx(fs.LoopVariableNode, ctx)!;
+            var start = ReadEx(fs.StartingValueNode, ctx)!;
+            var end = ReadEx(fs.EndingValueNode, ctx)!;
+            var down = fs.DirectionNode.Type == TokenType.DownToKeyword;
+            var s = Read(fs.StatementNode, ctx).ToList();
+            yield return For(loop, start, end, down, s);
         }
 
         private static IEnumerable<StatementSyntax> Read(UnaryOperationNode bo, Context ctx)
         {
-            var ex = ReadEx(bo)!;
+            var ex = ReadEx(bo, ctx)!;
             var stat = ex.AsStat();
             yield return stat;
         }
 
-        private static IEnumerable<StatementSyntax> Read(BinaryOperationNode bo, Context _)
+        private static IEnumerable<StatementSyntax> Read(BinaryOperationNode bo, Context ctx)
         {
-            var ex = ReadEx(bo)!;
+            if (bo.OperatorNode.Type == TokenType.ColonEquals
+                && ctx.MethodName is { } methodName
+                && bo.LeftNode.GetText() is var leftName)
+            {
+                var left = ReadEx(bo.LeftNode, ctx)!;
+                var right = ReadEx(bo.RightNode, ctx)!;
+                var s = leftName == methodName || leftName == "Result"
+                    ? Return(right)
+                    : Assign(left, right).AsStat();
+                yield return s;
+                yield break;
+            }
+            var ex = ReadEx(bo, ctx)!;
             var stat = ex.AsStat();
             yield return stat;
         }

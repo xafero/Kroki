@@ -137,6 +137,21 @@ namespace Kroki.Core.Code
             return AssignmentExpression(SyntaxKind.SimpleAssignmentExpression, name, value);
         }
 
+        public static AssignmentExpressionSyntax Assign(string name, ExpressionSyntax value)
+        {
+            return Assign(IdentifierName(name), value);
+        }
+
+        public static LocalDeclarationStatementSyntax Assign(string type, string name, object value,
+            bool isConst = false)
+        {
+            //var lds = LocalDeclarationStatement(VariableDeclaration(ParseTypeName(type))
+              //  .AddVariables(VariableDeclarator(name).WithInitializer(EqualsValueClause(Expr(value)))));
+            // return isConst ? lds.AddModifiers(Visibility.None.AsModifier(isConst: isConst)) : lds;
+            // TODO
+            throw new InvalidOperationException();
+        }
+
         public static ExpressionSyntax Access(ExpressionSyntax left, ExpressionSyntax right)
         {
             return MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, left, ToName(right));
@@ -147,8 +162,14 @@ namespace Kroki.Core.Code
             return Invoke(owner, IdentifierName(method), new[] { Arg(arg) });
         }
 
-        public static ArgumentSyntax Arg(ExpressionSyntax syntax) => Argument(syntax);
+        public static ArgumentSyntax Arg(this ExpressionSyntax syntax) => Argument(syntax);
 
+        public static IEnumerable<ArgumentSyntax> Arg(this IEnumerable<StatementSyntax> stat)
+        {
+            foreach (var expr in stat.Cast<ExpressionStatementSyntax>())
+                yield return Argument(expr.Expression);
+        }
+        
         public static ExpressionSyntax Invoke(ExpressionSyntax? owner, SimpleNameSyntax method,
             IEnumerable<ArgumentSyntax> args)
         {

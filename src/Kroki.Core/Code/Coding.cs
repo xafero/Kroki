@@ -5,7 +5,6 @@ using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.API;
 using Kroki.Core.Model;
-using Kroki.Core.Util;
 
 namespace Kroki.Core.Code
 {
@@ -13,7 +12,7 @@ namespace Kroki.Core.Code
     {
         internal static PropertyObj GenerateProperty(this PropertyNode node)
         {
-            var name = node.NameNode.GetName();
+            var name = node.NameNode.GetText();
             var method = new PropertyObj(name)
             {
                 PropType = Mapping.ToCSharp(node.TypeNode)
@@ -24,7 +23,7 @@ namespace Kroki.Core.Code
 
         internal static MethodObj GenerateMethod(this MethodHeadingNode node)
         {
-            var name = node.NameNode.GetName();
+            var name = node.NameNode.GetText();
             var method = new MethodObj(name);
             if (node.MethodTypeNode.Type == TokenType.ProcedureKeyword)
                 method.ReturnType = "void";
@@ -78,19 +77,44 @@ namespace Kroki.Core.Code
                 case ClassTypeNode ctn:
                     GenerateClass(ctn, tClazz);
                     break;
+                case RecordTypeNode rtn:
+                    GenerateRecord(rtn, tClazz);
+                    break;
                 default:
                     throw new InvalidOperationException($"{node.TypeNode} ?!");
             }
             return tClazz;
         }
 
+        private static Visibility GetVis(VisibilityNode? visNode)
+        {
+            var vis = visNode == null ? Visibility.Public : Mapping.ToCSharp(visNode);
+            return vis;
+        }
+
+        private static void GenerateRecord(RecordTypeNode rtn, ClassObj clazz)
+        {
+            foreach (var cln in rtn.ContentListNode.Items)
+            {
+                var vis = GetVis(cln.VisibilityNode);
+                GenerateRecord(vis, cln, clazz);
+            }
+        }
+
         private static void GenerateClass(ClassTypeNode ctn, ClassObj clazz)
         {
             foreach (var cln in ctn.ContentListNode.Items)
             {
-                var visNode = cln.VisibilityNode;
-                var vis = visNode == null ? Visibility.Public : Mapping.ToCSharp(visNode);
+                var vis = GetVis(cln.VisibilityNode);
                 GenerateClass(vis, cln, clazz);
+            }
+        }
+
+        private static void GenerateRecord(Visibility vis, VisibilitySectionNode cln, ClassObj clazz)
+        {
+            foreach (var clnItm in cln.ContentListNode.Items)
+            {
+                // TODO
             }
         }
 
