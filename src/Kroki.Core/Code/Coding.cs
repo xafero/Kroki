@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Util;
@@ -60,15 +61,30 @@ namespace Kroki.Core.Code
             foreach (var subNode in items)
             {
                 var stn = subNode.TypeNode;
-                var subType = stn == null ? "object" : Mapping.ToCSharp(stn);
+                var (subType, tag) = ParseVarType(stn);
                 foreach (var subName in subNode.NameListNode.Items)
                 {
                     var subLabel = subName.ItemNode.Text;
                     var subValue = (subNode as IHasTypeNameAndVal)?.ValueNode;
                     var sharpVal = subValue == null ? null : Extended.ReadEx(subValue, ctx);
-                    yield return new FieldObj(subLabel) { FieldType = subType, Value = sharpVal };
+                    yield return new FieldObj(subLabel) { FieldType = subType, Value = sharpVal, Tag = tag };
                 }
             }
+        }
+
+        private static (string, object?) ParseVarType(AstNode? stn)
+        {
+            if (stn == null) return ("object", null);
+            if (stn is EnumeratedTypeNode etn)
+            {
+                var enm = new EnumObj("_e");
+                GenerateEnumerated(etn, enm);
+                var ev = enm.Values;
+                enm.Name = string.Join("_", ev.Select(v => ((EnumValObj)v).Name[..1]));
+                return (enm.Name, enm);
+            }
+            var subType = Mapping.ToCSharp(stn);
+            return (subType, null);
         }
 
         public static ITypedDef GenerateClass(TypeDeclNode node)

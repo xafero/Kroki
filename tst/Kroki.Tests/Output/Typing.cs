@@ -59,6 +59,14 @@ namespace Kroki.Example
             Console.WriteLine(Thing);
         }
 
+        public enum C_D_H_S
+        {
+            Club,
+            Diamond,
+            Heart,
+            Spade
+        }
+
         public static void DoNative()
         {
             long a = 1;
@@ -85,7 +93,7 @@ namespace Kroki.Example
             bool b3 = true;
             bool b4 = false;
             bool b5 = true;
-            EnumeratedTypeNode e1 = Heart;
+            C_D_H_S e1 = Heart;
             TSound e2 = TSound.Clack;
             Suit e3 = Suit.Spade;
             TMyColor e4 = TMyColor.mcGreen;

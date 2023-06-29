@@ -10,6 +10,8 @@ using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;
 using static Kroki.Roslyn.Code.Construct;
 using Arr = System.Array;
+using Kroki.Roslyn.API;
+using System.Security.Claims;
 
 namespace Kroki.Core.Code
 {
@@ -168,12 +170,16 @@ namespace Kroki.Core.Code
             }
         }
 
-        private static IEnumerable<StatementSyntax> Read(VarSectionNode dvs, Context _)
+        private static IEnumerable<StatementSyntax> Read(VarSectionNode dvs, Context ctx)
         {
             foreach (var field in dvs.GenerateFields())
             {
                 var ft = field.FieldType;
                 var vt = field.Value ?? Mapping.GetDefault(ft);
+
+                if (field.Tag is CompileObj<MemberDeclarationSyntax> tms && ctx.Scope is { } scope)
+                    scope.Members.Add(tms);
+
                 yield return Assign(ft, field.Name, vt);
             }
         }

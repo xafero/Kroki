@@ -16,7 +16,7 @@ namespace Kroki.Roslyn.Model
         }
 
         public Visibility Visibility { get; set; }
-        public string Name { get; }
+        public string Name { get; set; }
         public List<CompileObj<EnumMemberDeclarationSyntax>> Values { get; }
 
         public override MemberDeclarationSyntax Create()

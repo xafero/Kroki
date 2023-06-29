@@ -97,7 +97,7 @@ namespace Kroki.Core
             method.IsStatic = clazz.IsStatic;
             method.IsAbstract = false;
 
-            var ctx = new Context(method.Name);
+            var ctx = Context.By(method, clazz);
             foreach (var stat in Read(node.FancyBlockNode, ctx))
                 method.Statements.Add(stat);
 
@@ -118,7 +118,7 @@ namespace Kroki.Core
         {
             var block = node.InitializationStatementListNode;
             var method = Prebuilt.CreateMain();
-            foreach (var stat in Read(block, Context.By(method)))
+            foreach (var stat in Read(block, Context.By(method, RootNsp)))
                 method.Statements.Add(stat);
 
             if (method.Statements.Count >= 1)
@@ -143,6 +143,9 @@ namespace Kroki.Core
                 {
                     field.IsStatic = clazz.IsStatic;
                     clazz.Members.Add(field);
+
+                    if (field.Tag is CompileObj<MemberDeclarationSyntax> tms) 
+                        clazz.Members.Add(tms);
                 }
             }
 
