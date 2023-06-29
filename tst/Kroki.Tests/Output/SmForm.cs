@@ -14,7 +14,7 @@ namespace Kroki.Example
         {
             string s = default;
             s = "Hello " + Edit1 + " Delphi welcomes you!";
-            Console.WriteLine("s");
+            Console.WriteLine(s);
         }
 
         private string FMQServer;
@@ -27,5 +27,7 @@ namespace Kroki.Example
         {
             FMQServer = Value;
         }
+
+        public string MQServer { get; set; }
     }
 }

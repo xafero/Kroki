@@ -161,36 +161,40 @@ namespace Kroki.Core.Code
             return "default";
         }
 
-        public static void Replace(ref string owner, ref string method)
+        public static (string owner, string method)? Replace(string text)
         {
-            if (string.IsNullOrWhiteSpace(owner))
-                switch (method.ToLower())
-                {
-                    case "read":
-                        owner = "Console";
-                        method = "Read";
-                        break;
-                    case "readln":
-                        owner = "Console";
-                        method = "ReadLine";
-                        break;
-                    case "write":
-                        owner = "Console";
-                        method = "Write";
-                        break;
-                    case "writeln":
-                        owner = "Console";
-                        method = "WriteLine";
-                        break;
-                    case "new":
-                        owner = "Compat";
-                        method = "Renew";
-                        break;
-                    case "dispose":
-                        owner = "Compat";
-                        method = "Dispose";
-                        break;
-                }
+            string? owner = null;
+            string? method = null;
+            switch (text.ToLower())
+            {
+                case "read":
+                    owner = "Console";
+                    method = "Read";
+                    break;
+                case "readln":
+                    owner = "Console";
+                    method = "ReadLine";
+                    break;
+                case "write":
+                    owner = "Console";
+                    method = "Write";
+                    break;
+                case "writeln":
+                    owner = "Console";
+                    method = "WriteLine";
+                    break;
+                case "new":
+                    owner = "Compat";
+                    method = "Renew";
+                    break;
+                case "dispose":
+                    owner = "Compat";
+                    method = "Dispose";
+                    break;
+            }
+            if (string.IsNullOrWhiteSpace(owner) || string.IsNullOrWhiteSpace(method))
+                return null;
+            return (owner!, method!);
         }
 
         public static string PatchConstant(string text)

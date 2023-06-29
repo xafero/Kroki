@@ -67,11 +67,21 @@ namespace Kroki.Core.Code
 
         private static IEnumerable<StatementSyntax> Read(ParameterizedNode pn, Context ctx)
         {
-            var left = ReadEx(pn.LeftNode, ctx)!;
+            var left = Patch(pn.LeftNode, ctx);
             var prm = pn.ParameterListNode;
             var args = prm.Items.Select(p => ReadEx(p, ctx)!.Arg()).ToArray();
             var item = Invoke(left, args);
             yield return item.AsStat();
+        }
+
+        private static ExpressionSyntax Patch(AstNode pn, Context ctx)
+        {
+            var left = ReadEx(pn, ctx)!;
+            if (pn.GetText() is var leftName && Mapping.Replace(leftName) is { } p)
+            {
+                left = Access(Name(p.owner), Name(p.method));
+            }
+            return left;
         }
 
         private static IEnumerable<StatementSyntax> Read(WhileStatementNode ws, Context ctx)

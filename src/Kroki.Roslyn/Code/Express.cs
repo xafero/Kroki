@@ -169,6 +169,8 @@ namespace Kroki.Roslyn.Code
                 IdentifierName(method)), args));
         }
 
+        public static ExpressionSyntax Name(string name) => IdentifierName(name);
+
         public static ExpressionSyntax Access(ExpressionSyntax left, ExpressionSyntax right)
         {
             return MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, left, ToName(right));
