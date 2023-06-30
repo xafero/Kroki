@@ -5,8 +5,27 @@ using Kroki.Runtime;
 
 namespace Kroki.Example
 {
+    public enum J_F_M_A_M_J_J_A_S_O_N_D
+    {
+        Jan,
+        Feb,
+        Mar,
+        Apr,
+        May,
+        Jun,
+        Jul,
+        Aug,
+        Sep,
+        Oct,
+        Nov,
+        Dec
+    }
+
     public class TDateRec
     {
+        public int Year;
+        public J_F_M_A_M_J_J_A_S_O_N_D Month;
+        public int Day;
     }
 
     public static class project1

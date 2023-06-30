@@ -44,6 +44,8 @@ namespace Kroki.Core.Code
             {
                 case Token { Type: TokenType.Identifier } to:
                     return to.Text;
+                case Token { Type: TokenType.Number } to:
+                    return to.Text;
                 case BinaryOperationNode bo:
                     return GetText(bo);
                 case ParameterizedNode pn:

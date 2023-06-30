@@ -65,7 +65,8 @@ namespace Kroki.Core
 
         public override void VisitMethodHeadingNode(MethodHeadingNode node)
         {
-            var method = node.GenerateMethod();
+            var ctx = Context.By(null, RootNsp);
+            var method = node.GenerateMethod(ctx);
 
             if (node.ParentNode.ParentNode is UnitSectionNode)
             {
@@ -79,7 +80,8 @@ namespace Kroki.Core
 
         public override void VisitMethodImplementationNode(MethodImplementationNode node)
         {
-            var method = node.MethodHeadingNode.GenerateMethod();
+            var ctx = Context.By(null, RootNsp);
+            var method = node.MethodHeadingNode.GenerateMethod(ctx);
 
             ClassObj clazz;
             var nameParts = Names.SplitName(method.Name);
@@ -97,7 +99,7 @@ namespace Kroki.Core
             method.IsStatic = clazz.IsStatic;
             method.IsAbstract = false;
 
-            var ctx = Context.By(method, clazz);
+            ctx = Context.By(method, clazz);
             foreach (var stat in Read(node.FancyBlockNode, ctx))
                 method.Statements.Add(stat);
 
@@ -139,13 +141,11 @@ namespace Kroki.Core
             if (node.ParentNode.ParentNode is ProgramNode)
             {
                 var clazz = RootNsp.Members.OfType<ClassObj>().First();
-                foreach (var field in node.GenerateFields())
+                var ctx = Context.By(null, clazz);
+                foreach (var field in node.GenerateFields(ctx))
                 {
                     field.IsStatic = clazz.IsStatic;
                     clazz.Members.Add(field);
-
-                    if (field.Tag is CompileObj<MemberDeclarationSyntax> tms) 
-                        clazz.Members.Add(tms);
                 }
             }
 
@@ -157,7 +157,8 @@ namespace Kroki.Core
             if (node.ParentNode.ParentNode is ProgramNode)
             {
                 var clazz = RootNsp.Members.OfType<ClassObj>().First();
-                foreach (var field in node.GenerateFields())
+                var ctx = Context.By(null, clazz);
+                foreach (var field in node.GenerateFields(ctx))
                 {
                     var co = new ConstObj(field);
                     clazz.Members.Add(co);
@@ -169,7 +170,8 @@ namespace Kroki.Core
 
         public override void VisitTypeDeclNode(TypeDeclNode node)
         {
-            var raw = Coding.GenerateClass(node);
+            var ctx = Context.By(null, RootNsp);
+            var raw = Coding.GenerateClass(node, ctx);
             var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
 
             var inPro = node.ParentNode.ParentNode.ParentNode.ParentNode is ProgramNode;

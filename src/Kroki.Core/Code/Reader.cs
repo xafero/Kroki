@@ -158,9 +158,9 @@ namespace Kroki.Core.Code
             yield return stat;
         }
 
-        private static IEnumerable<StatementSyntax> Read(ConstSectionNode dvs, Context _)
+        private static IEnumerable<StatementSyntax> Read(ConstSectionNode dvs, Context ctx)
         {
-            foreach (var raw in dvs.GenerateFields())
+            foreach (var raw in dvs.GenerateFields(ctx))
             {
                 var field = new ConstObj(raw);
                 var ft = field.FieldType;
@@ -171,14 +171,10 @@ namespace Kroki.Core.Code
 
         private static IEnumerable<StatementSyntax> Read(VarSectionNode dvs, Context ctx)
         {
-            foreach (var field in dvs.GenerateFields())
+            foreach (var field in dvs.GenerateFields(ctx))
             {
                 var ft = field.FieldType;
                 var vt = field.Value ?? Mapping.GetDefault(ft);
-
-                if (field.Tag is CompileObj<MemberDeclarationSyntax> tms && ctx.Scope is { } scope)
-                    scope.Members.Add(tms);
-
                 yield return Assign(ft, field.Name, vt);
             }
         }

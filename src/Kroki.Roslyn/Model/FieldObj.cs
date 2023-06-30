@@ -25,7 +25,6 @@ namespace Kroki.Roslyn.Model
         public string FieldType { get; set; }
         public string Name { get; }
         public object? Value { get; set; }
-        public object? Tag { get; set; }
 
         public override MemberDeclarationSyntax Create()
         {
