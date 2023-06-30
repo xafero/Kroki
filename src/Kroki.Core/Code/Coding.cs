@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Util;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Core.Code
 {
