@@ -12,17 +12,19 @@
 </head>
 
 <script language="javascript">
-    function loadTxtInto(fileId, areaId) {
+    function loadTxtInto(fileId, areaId, nameId) {
 	    var file = document.getElementById(fileId).files[0];
 	    var reader = new FileReader();
 	    reader.onload = function (e) {
 		    var area = document.getElementById(areaId);
 			area.value = e.target.result;
-			var event = new Event('change');
-			area.dispatchEvent(event);
+			area.dispatchEvent(new Event('change'));
+			var name = document.getElementById(nameId);
+			name.value = file.name;
+            name.dispatchEvent(new Event('change'));
 	    };
 	    reader.readAsText(file);
-    }
+	}
 
 	function downloadFromUrl(options) {
 		var elem = document.createElement('a');

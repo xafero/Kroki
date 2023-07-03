@@ -53,7 +53,7 @@ namespace Kroki.Core.Util
         }
 
         public static (string file, string content) Translate(string path, SourceText code,
-            string rSpace = "Kroki.Example", bool includeDate = true)
+            string rSpace = "Kroki.Example", bool includeDate = true, bool catchError = true)
         {
             var simpleName = Path.GetFileName(path);
             var hintName = $"{simpleName}.cs";
@@ -74,6 +74,8 @@ namespace Kroki.Core.Util
             }
             catch (Exception parseEx)
             {
+	            if (!catchError)
+		            throw;
                 processed = $"/* {parseEx} */";
             }
             var genText = genCode + processed + Environment.NewLine;
@@ -83,8 +85,15 @@ namespace Kroki.Core.Util
         public static SourceText ReadSource(string file)
         {
             var text = File.ReadAllText(file, Utf);
-            var src = SourceText.From(text, Utf);
-            return src;
+            return LoadSource(text);
         }
-    }
+
+        public static SourceText LoadSource(string text)
+        {
+	        var src = SourceText.From(text, Utf);
+	        return src;
+        }
+
+		public static string Clean(string text) => text.Replace("\r\n", "\n");
+	}
 }

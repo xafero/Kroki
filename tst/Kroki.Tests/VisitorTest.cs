@@ -69,7 +69,5 @@ namespace Kroki.Tests
             var expected = File.ReadAllText(outFile, Encoding.UTF8);
             Assert.Equal(Clean(expected), Clean(translated));
         }
-
-        private static string Clean(string text) => text.Replace("\r\n", "\n");
     }
 }

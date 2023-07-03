@@ -1,9 +1,78 @@
 @page "/"
 @using System.Text.RegularExpressions
 @using Kroki
+@using System.IO;
+@using System.Text;
+@using System.Reflection;
+@using Kroki.Core.Util
+@using static Kroki.Core.Util.Helpers;
 
 @inject IJSRuntime JsRuntime
 
 <PageTitle>Demo</PageTitle>
 
-<h1>Delphi to C#</h1>
+<h2>Delphi to C#</h2>
+
+<style>
+	textarea {
+		font-family: monospace;
+	}
+</style>
+
+<textarea id="inArea"  name="inCode"  rows="20" cols="80" @bind="_codeInput"></textarea>
+<textarea id="outArea" name="outCode" rows="20" cols="80" @bind="_codeOutput"></textarea>
+
+<input id="inFile" type="hidden" @bind="_codeInputName" />
+
+<input id="myInFile" type="file" onchange="loadTxtInto('myInFile','inArea','inFile')" />
+<button class="btn btn-primary" @onclick="Convert">Convert!</button>
+<button class="btn btn-secondary" @onclick="Download">Download!</button>
+
+@code {
+	private const string ErrPrefix = "ERROR: ";
+	private string _codeInputName = string.Empty;
+	private string _codeInput = string.Empty;
+	private string _codeOutput = string.Empty;
+	private string _destName = string.Empty;
+
+	private async void Download()
+	{
+		var output = _codeOutput?.Trim();
+		if (string.IsNullOrWhiteSpace(output))
+		{
+			return;
+		}
+		var bytes = Encoding.UTF8.GetBytes(output);
+		await JsRuntime.InvokeVoidAsync("downloadArray",
+			new
+			{
+				ByteArray = bytes, FileName = _destName, ContentType = "text/cs"
+			});
+	}
+
+	private void Convert()
+	{
+		const string ext = "pas";
+		_destName = "error.txt";
+		var input = _codeInput?.Trim();
+		if (string.IsNullOrWhiteSpace(input))
+		{
+			_codeOutput = $"{ErrPrefix}It is empty!";
+			return;
+		}
+		var inSrc = LoadSource(input);
+		var inFile = string.IsNullOrWhiteSpace(_codeInputName) ? $"online.{ext}" : _codeInputName;
+		var nsp = GetType().Namespace!;
+		try
+		{
+			var (dstName,translated) = Translate(inFile, inSrc,
+				includeDate: true, rSpace: nsp, catchError: false);
+			_destName = dstName;
+			_codeOutput = translated.Trim();
+		}
+		catch (Exception ex)
+		{
+			_codeOutput = $"{ErrPrefix}[{ex.GetType().Name}] {ex.Message}";
+		}
+	}
+}
