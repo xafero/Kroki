@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.FileSystemGlobbing;
 using System.Threading.Tasks;
 using System;
 using System.Net.Http;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Kroki.Demo
