@@ -11,6 +11,36 @@
     <link href="Kroki.Demo.styles.css" rel="stylesheet" />
 </head>
 
+<script language="javascript">
+    function loadTxtInto(fileId, areaId) {
+	    var file = document.getElementById(fileId).files[0];
+	    var reader = new FileReader();
+	    reader.onload = function (e) {
+		    var area = document.getElementById(areaId);
+			area.value = e.target.result;
+			var event = new Event('change');
+			area.dispatchEvent(event);
+	    };
+	    reader.readAsText(file);
+    }
+
+	function downloadFromUrl(options) {
+		var elem = document.createElement('a');
+		elem.href = options.url;
+		elem.download = options.fileName ?? '';
+		elem.click();
+		elem.remove();
+	}
+
+	function downloadArray(options) {
+		var array = options.byteArray;
+		var blob = new Blob([array], { type: options.contentType });
+		var url = URL.createObjectURL(blob);
+		downloadFromUrl({ url: url, fileName: options.fileName });
+		URL.revokeObjectURL(url);
+	}
+</script>
+
 <body>
     <div id="app">Loading...</div>
 
