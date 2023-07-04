@@ -1,20 +1,22 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using Scriban;
 using static Kroki.MSBuild.Helper;
 
 namespace Kroki.MSBuild
 {
 	public static class Creator
 	{
+		public static Func<string, string, string>? Relative;
+
 		public static string CreateSolution()
 		{
 			var args = new { Name = "World" };
 			return LoadAndRender("Templates.solution.sln", args);
 		}
 
-		public static string CreateProject(string? name, IDictionary<string, string> meta)
+		public static string CreateProject(string? name, IDictionary<string, string> meta,
+			string root, ISet<string> sources)
 		{
 			var pMeta = new Dictionary<string, string>();
 			if (!string.IsNullOrWhiteSpace(name))
@@ -39,7 +41,17 @@ namespace Kroki.MSBuild
 				pMeta["AssemblyName"] = an.Replace(".exe", string.Empty)
 					.Replace(".dll", string.Empty);
 
-			var args = new { Meta = pMeta };
+			var pLinks = new Dictionary<string, string>();
+			foreach (var source in sources)
+			{
+				var srcName = Path.GetFileName(source);
+				var srcPath = Relative!.Invoke(root, source);
+				if (srcPath == srcName)
+					continue;
+				pLinks[srcPath] = srcName;
+			}
+
+			var args = new { Meta = pMeta, Links = pLinks };
 			return LoadAndRender("Templates.classlib.csproj", args);
 		}
 	}

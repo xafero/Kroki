@@ -6,4 +6,9 @@
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+{{ for item in links }}    <Compile Include="{{ item.key }}" Link="{{ item.value }}" />
+{{ end }}
+  </ItemGroup>
+
 </Project>
