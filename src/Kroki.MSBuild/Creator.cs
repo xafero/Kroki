@@ -9,9 +9,17 @@ namespace Kroki.MSBuild
 	{
 		public static Func<string, string, string>? Relative;
 
-		public static string CreateSolution()
+		public static string CreateSolution(string root, IEnumerable<string> projectPaths)
 		{
-			var args = new { Name = "World" };
+			var projects = new List<ProjectObj>();
+			foreach (var projectPath in projectPaths)
+			{
+				var projName = Path.GetFileNameWithoutExtension(projectPath);
+				var projPath = Relative!.Invoke(root, projectPath);
+				var projId = Guid.NewGuid().ToString("B").ToUpper();
+				projects.Add(new ProjectObj(projName, projPath, projId));
+			}
+			var args = new { Projects = projects };
 			return LoadAndRender("Templates.solution.sln", args);
 		}
 
