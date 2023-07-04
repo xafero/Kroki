@@ -5,7 +5,7 @@ using Kroki.Runtime;
 
 namespace Kroki.Example
 {
-    public class TSharpCenterWnd
+    public class TSharpCenterWnd : TForm
     {
         public TPanel pnlSettingTree;
         public TPanel pnlMain;

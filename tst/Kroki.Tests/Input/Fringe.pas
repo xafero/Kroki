@@ -37,7 +37,7 @@ type
   IMyDelegate = interface
     procedure DoThis (value: integer);
   end;
-  TMyClass = class (TInterfacedObject, IMyDelegate)
+  TMyClass = class (IMyDelegate)
     procedure DoThis (value: integer);
   end;
 

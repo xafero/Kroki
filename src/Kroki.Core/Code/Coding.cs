@@ -7,6 +7,7 @@ using Kroki.Core.Util;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Core.Code
 {
@@ -192,11 +193,16 @@ namespace Kroki.Core.Code
 
         private static void GenerateClass(ClassTypeNode ctn, ClassObj clazz, Context ctx)
         {
-            foreach (var cln in ctn.ContentListNode.Items)
-            {
-                var vis = GetVis(cln.VisibilityNode);
-                GenerateClass(vis, cln, clazz, ctx);
-            }
+	        foreach (var inherit in ctn.InheritanceListNode.Items)
+	        {
+		        var parentType = Express.Name(Mapping.ToCSharp(inherit.ItemNode));
+		        clazz.Base.Add((TypeSyntax)parentType);
+	        }
+	        foreach (var cln in ctn.ContentListNode.Items)
+	        {
+		        var vis = GetVis(cln.VisibilityNode);
+		        GenerateClass(vis, cln, clazz, ctx);
+	        }
         }
 
         private static void GenerateInterface(InterfaceTypeNode itn, InterfaceObj ifn, Context ctx)

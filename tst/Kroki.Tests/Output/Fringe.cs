@@ -46,7 +46,7 @@ namespace Kroki.Example
         public int signum;
     }
 
-    public class TA
+    public class TA : object
     {
         private int GetA()
         {
