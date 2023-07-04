@@ -27,11 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{361DEE30-6C7
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kroki.Bulk", "try\Kroki.Bulk\Kroki.Bulk.csproj", "{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Roslyn", "src\Kroki.Roslyn\Kroki.Roslyn.csproj", "{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kroki.Roslyn", "src\Kroki.Roslyn\Kroki.Roslyn.csproj", "{DBDA53F0-9D37-45D1-8B1D-B52312E3D306}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Demo", "try\Kroki.Demo\Kroki.Demo.csproj", "{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kroki.Demo", "try\Kroki.Demo\Kroki.Demo.csproj", "{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.MSBuild", "src\Kroki.MSBuild\Kroki.MSBuild.csproj", "{BDC15068-ABC3-466B-BBED-23B46BCCADE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kroki.MSBuild", "src\Kroki.MSBuild\Kroki.MSBuild.csproj", "{BDC15068-ABC3-466B-BBED-23B46BCCADE6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

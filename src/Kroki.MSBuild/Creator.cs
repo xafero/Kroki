@@ -1,30 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using Scriban;
+using static Kroki.MSBuild.Helper;
 
 namespace Kroki.MSBuild
 {
 	public static class Creator
 	{
-		private static string LoadTemplate(string shortName)
-		{
-			var type = typeof(Creator);
-			var name = $"{type.Namespace}.{shortName}.txt";
-			using var stream = type.Assembly.GetManifestResourceStream(name)!;
-			using var reader = new StreamReader(stream, Encoding.UTF8);
-			return reader.ReadToEnd();
-		}
-
-		private static string LoadAndRender(string shortName, object model)
-		{
-			var text = LoadTemplate(shortName);
-			var template = Template.Parse(text);
-			var result = template.Render(model);
-			return result;
-		}
-
 		public static string CreateSolution()
 		{
 			var args = new { Name = "World" };
@@ -59,14 +42,5 @@ namespace Kroki.MSBuild
 			var args = new { Meta = pMeta };
 			return LoadAndRender("Templates.classlib.csproj", args);
 		}
-
-		public static void Write(string path, string text)
-		{
-			File.WriteAllText(path, text, Encoding.UTF8);
-		}
-
-		private static bool TryGoodValue(this IDictionary<string, string> dict,
-			string key, out string value)
-			=> dict.TryGetValue(key, out value) && !string.IsNullOrWhiteSpace(value);
 	}
 }
