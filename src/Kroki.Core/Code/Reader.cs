@@ -6,6 +6,7 @@ using DGrok.Framework;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using Kroki.Roslyn.Util;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;
@@ -136,11 +137,18 @@ namespace Kroki.Core.Code
         private static IEnumerable<StatementSyntax> Read(TryExceptNode tf, Context ctx)
         {
 	        var @try = Read(tf.TryStatementListNode, ctx);
-
-	        // TODO tf.ExceptionItemListNode;
-
 	        var claus = new List<Catch>();
-	        if (tf.ElseStatementListNode is { } @else)
+	        foreach (var item in tf.ExceptionItemListNode.Items)
+	        {
+		        var it = ReadEx(item.TypeNode, ctx);
+		        var nn = ReadEx(item.NameNode, ctx);
+		        var sn = Read(item.StatementNode, ctx);
+		        var itt = (TypeSyntax?)it;
+		        var nnt = nn?.GetFirstToken();
+		        claus.Add(new Catch(itt, nnt, sn));
+	        }
+	        if (tf.ElseStatementListNode is { } @else &&
+	            (claus.Count == 0 || @else.Items.Count >= 1))
 	        {
 		        var @default = Read(@else, ctx);
 		        claus.Add(new Catch(null, null, @default));

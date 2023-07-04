@@ -36,13 +36,13 @@ namespace Kroki.Example
 
     public class signedQword
     {
-        public qword value;
+        public ushort value;
         public int signum;
     }
 
     public struct signedQwordPacked
     {
-        public qword value;
+        public ushort value;
         public int signum;
     }
 
@@ -73,10 +73,10 @@ namespace Kroki.Example
 
     public interface IMyDelegate
     {
-        public abstract void DoThis(int value);
+        void DoThis(int value);
     }
 
-    public class TMyClass
+    public class TMyClass : IMyDelegate
     {
         public void DoThis(int value)
         {
@@ -92,7 +92,7 @@ namespace Kroki.Example
         {
             string menuItem = default;
             int I = default;
-            foreach (menuItem in Items)
+            foreach (var menuItem in Items)
             {
                 Console.WriteLine(" (" + menuItem + ")");
             }

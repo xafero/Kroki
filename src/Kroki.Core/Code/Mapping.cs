@@ -61,6 +61,8 @@ namespace Kroki.Core.Code
                     return "byte";
                 case "SmallInt":
                     return "short";
+                case "qword":
+	                return "ushort";
                 case "Boolean":
                 case "boolean":
                 case "ByteBool":
