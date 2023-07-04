@@ -6,7 +6,6 @@ using DGrok.Framework;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using Kroki.Roslyn.Util;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;

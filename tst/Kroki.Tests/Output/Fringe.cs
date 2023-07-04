@@ -135,8 +135,9 @@ namespace Kroki.Example
             {
                 res = 42;
             }
-            catch
+            catch (Exception E)
             {
+                res = -1;
             }
 
             return res;

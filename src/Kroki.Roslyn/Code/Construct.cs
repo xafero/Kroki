@@ -140,11 +140,13 @@ namespace Kroki.Roslyn.Code
             return ForStatement(declaration, ini, cond, inc, statement);
         }
 
-        public static ForEachVariableStatementSyntax ForEach(ExpressionSyntax init,
+        public static ForEachStatementSyntax ForEach(ExpressionSyntax init,
 	        ExpressionSyntax expression, IEnumerable<StatementSyntax> s)
         {
+	        var vt = ParseTypeName("var");
+	        var id = init.GetFirstToken();
 	        var statement = Block(s);
-	        return ForEachVariableStatement(init, expression, statement);
+	        return ForEachStatement(vt, id, expression, statement);
         }
     }
 }
