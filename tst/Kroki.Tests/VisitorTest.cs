@@ -45,6 +45,12 @@ namespace Kroki.Tests
         }
 
         [Fact]
+        public void ConvertFringe()
+        {
+	        ParseAndCheck("Fringe");
+        }
+
+		[Fact]
         public void ConvertTyping()
         {
             ParseAndCheck("Typing");

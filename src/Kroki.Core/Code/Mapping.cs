@@ -94,7 +94,8 @@ namespace Kroki.Core.Code
                 case "WideChar":
                 case "UCS2Char":
                 case "UCS4Char":
-                case "String":
+                case "UCS4char":
+				case "String":
                 case "string":
                     return "string";
                 case "TObject":
@@ -116,7 +117,7 @@ namespace Kroki.Core.Code
         public static Visibility ToCSharp(VisibilityNode visNode)
         {
             var visTxt = visNode.VisibilityKeywordNode.Text;
-            switch (visTxt)
+            switch (visTxt.ToLowerInvariant())
             {
                 case "private":
                     return Visibility.Private;

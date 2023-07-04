@@ -233,5 +233,14 @@ namespace Kroki.Roslyn.Code
             const SyntaxKind op = SyntaxKind.LogicalNotExpression;
             return PrefixUnaryExpression(op, value);
         }
+
+        public static GenericNameSyntax NameType(string name, params string[] subNames)
+        {
+	        var type = GenericName(name);
+	        var nodes = subNames.Select(s => ParseTypeName(s));
+	        var args = TypeArgumentList(SeparatedList(nodes));
+	        type = type.WithTypeArgumentList(args);
+	        return type;
+        }
     }
 }

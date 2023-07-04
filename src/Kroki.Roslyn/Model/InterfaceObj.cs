@@ -8,7 +8,7 @@ namespace Kroki.Roslyn.Model
 {
     public sealed class InterfaceObj : CompileObj<MemberDeclarationSyntax>, ITypeDef
     {
-        public InterfaceObj(string name)
+	    public InterfaceObj(string name)
         {
             Visibility = Visibility.Public;
             Name = name;

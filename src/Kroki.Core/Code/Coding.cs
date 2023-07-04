@@ -25,20 +25,25 @@ namespace Kroki.Core.Code
 
         internal static MethodObj GenerateMethod(this MethodHeadingNode node, Context ctx)
         {
-            var name = node.NameNode.GetText();
-            var method = new MethodObj(name);
-            if (node.MethodTypeNode.Type == TokenType.ProcedureKeyword)
-                method.ReturnType = "void";
-            else if (node.MethodTypeNode.Type == TokenType.FunctionKeyword)
-                method.ReturnType = Mapping.ToCSharp(node.ReturnTypeNode);
-            method.IsAbstract = true;
-            var par = GenerateFields(node, ctx);
-            foreach (var pItem in par)
-            {
-                var pObj = new ParamObj(pItem.Name) { Type = pItem.FieldType };
-                method.Params.Add(pObj);
-            }
-            return method;
+	        var name = node.NameNode.GetText();
+	        return GenerateMethod(node, ctx, name);
+        }
+
+        internal static MethodObj GenerateMethod(this IMethodLike node, Context ctx, string name)
+        {
+	        var method = new MethodObj(name);
+	        if (node.MethodTypeNode.Type == TokenType.ProcedureKeyword)
+		        method.ReturnType = "void";
+	        else if (node.MethodTypeNode.Type == TokenType.FunctionKeyword)
+		        method.ReturnType = Mapping.ToCSharp(node.ReturnTypeNode);
+	        method.IsAbstract = true;
+	        var par = GenerateFields(node, ctx);
+	        foreach (var pItem in par)
+	        {
+		        var pObj = new ParamObj(pItem.Name) { Type = pItem.FieldType };
+		        method.Params.Add(pObj);
+	        }
+	        return method;
         }
 
         internal static IEnumerable<FieldObj> GenerateFields(this FieldSectionNode node, Context ctx)
@@ -50,7 +55,7 @@ namespace Kroki.Core.Code
         internal static IEnumerable<FieldObj> GenerateFields(this ConstSectionNode node, Context ctx)
             => CreateFields(node.ConstListNode.Items, ctx);
 
-        internal static IEnumerable<FieldObj> GenerateFields(this MethodHeadingNode node, Context ctx)
+        internal static IEnumerable<FieldObj> GenerateFields(this IMethodLike node, Context ctx)
             => CreateFields(node.ParameterListNode.Items.Select(i => i.ItemNode), ctx);
 
         private static IEnumerable<FieldObj> CreateFields<T>(IEnumerable<T> items, Context ctx)
@@ -93,23 +98,47 @@ namespace Kroki.Core.Code
 
         public static ITypedDef GenerateClass(TypeDeclNode node, Context ctx)
         {
-            var name = node.NameNode.Text;
-            switch (node.TypeNode)
-            {
-                case ClassTypeNode ctn:
-                    var clazz = new ClassObj(name);
-                    GenerateClass(ctn, clazz, ctx);
-                    return clazz;
-                case RecordTypeNode rtn:
-                    var rec = new ClassObj(name);
-                    GenerateRecord(rtn, rec, ctx);
-                    return rec;
-                case EnumeratedTypeNode etn:
-                    var enm = new EnumObj(name);
-                    GenerateEnumerated(etn, enm, ctx);
-                    return enm;
-            }
-            throw new InvalidOperationException($"{node.TypeNode} ?!");
+	        var name = node.NameNode.Text;
+	        switch (node.TypeNode)
+	        {
+		        case ClassTypeNode ctn:
+			        var clazz = new ClassObj(name);
+			        GenerateClass(ctn, clazz, ctx);
+			        return clazz;
+		        case InterfaceTypeNode itn:
+			        var inf = new InterfaceObj(name);
+			        GenerateInterface(itn, inf, ctx);
+			        return inf;
+		        case RecordTypeNode rtn:
+			        var rec = new ClassObj(name);
+			        GenerateRecord(rtn, rec, ctx);
+			        return rec;
+		        case PackedTypeNode pat:
+			        var prr = new StructObj(name);
+			        GenerateRecord((RecordTypeNode)pat.TypeNode, prr, ctx);
+			        return prr;
+		        case EnumeratedTypeNode etn:
+			        var enm = new EnumObj(name);
+			        GenerateEnumerated(etn, enm, ctx);
+			        return enm;
+		        case ProcedureTypeNode ptn:
+			        var del = new DelegateObj(name);
+			        GenerateDelegate(ptn, del, ctx);
+			        return del;
+		        case ArrayTypeNode atn:
+			        var att = new ClassObj(name);
+			        GenerateArray(atn, att, ctx);
+			        return att;
+		        case SetOfNode son:
+			        var set = new ClassObj(name);
+			        GenerateSetOf(son, set, ctx);
+			        return set;
+		        case PointerTypeNode:
+			        var prt = new StructObj(name);
+			        // TODO Handle pointer?!
+			        return prt;
+	        }
+	        throw new InvalidOperationException($"{node.TypeNode} ?!");
         }
 
         private static Visibility GetVis(VisibilityNode? visNode)
@@ -130,7 +159,29 @@ namespace Kroki.Core.Code
             }
         }
 
-        private static void GenerateRecord(RecordTypeNode rtn, ClassObj clazz, Context ctx)
+        private static void GenerateDelegate(ProcedureTypeNode ptn, DelegateObj del, Context ctx)
+        {
+	        var method = GenerateMethod(ptn, ctx, del.Name);
+	        del.Params.AddRange(method.Params);
+	        del.ReturnType = method.ReturnType;
+	        del.Visibility = method.Visibility;
+        }
+
+        private static void GenerateArray(ArrayTypeNode atn, ClassObj cla, Context _)
+        {
+	        var type = atn.TypeNode;
+	        var csType = Mapping.ToCSharp(type);
+	        cla.Base.Add(Express.NameType("List", csType));
+        }
+
+        private static void GenerateSetOf(SetOfNode set, ClassObj cla, Context _)
+        {
+	        var type = set.TypeNode;
+	        var csType = Mapping.ToCSharp(type);
+	        cla.Base.Add(Express.NameType("Set", csType));
+        }
+
+        private static void GenerateRecord(RecordTypeNode rtn, ITypeDef clazz, Context ctx)
         {
             foreach (var cln in rtn.ContentListNode.Items)
             {
@@ -148,54 +199,72 @@ namespace Kroki.Core.Code
             }
         }
 
-        private static void GenerateRecord(Visibility vis, VisibilitySectionNode cln, ClassObj clazz, Context ctx)
+        private static void GenerateInterface(InterfaceTypeNode itn, InterfaceObj ifn, Context ctx)
         {
-            foreach (var clnItm in cln.ContentListNode.Items)
-            {
-                switch (clnItm)
-                {
-                    case FieldSectionNode fsn:
-                        foreach (var field in GenerateFields(fsn, ctx))
-                        {
-                            field.IsStatic = clazz.IsStatic;
-                            field.Visibility = vis;
-                            clazz.Members.Add(field);
-                        }
-                        continue;
-                }
-                throw new InvalidOperationException($"{vis} | {clnItm} ?!");
-            }
+	        foreach (var cln in itn.MethodAndPropertyListNode.Items)
+	        {
+		        GenerateMember(Visibility.Public, cln, ifn, ctx);
+	        }
+        }
+
+        private static void GenerateRecord(Visibility vis, VisibilitySectionNode cln, ITypeDef clazz, Context ctx)
+        {
+	        foreach (var clnItm in cln.ContentListNode.Items)
+	        {
+		        switch (clnItm)
+		        {
+			        case FieldSectionNode fsn:
+				        foreach (var field in GenerateFields(fsn, ctx))
+				        {
+					        field.IsStatic = IsStatic(clazz);
+					        field.Visibility = vis;
+					        clazz.Members.Add(field);
+				        }
+				        continue;
+		        }
+		        throw new InvalidOperationException($"{vis} | {clnItm} ?!");
+	        }
+        }
+
+        private static bool IsStatic(ITypeDef clazz)
+        {
+	        return clazz is ClassObj { IsStatic: true };
         }
 
         private static void GenerateClass(Visibility vis, VisibilitySectionNode cln, ClassObj clazz, Context ctx)
         {
-            foreach (var clnItm in cln.ContentListNode.Items)
-            {
-                switch (clnItm)
-                {
-                    case FieldSectionNode fsn:
-                        foreach (var field in GenerateFields(fsn, ctx))
-                        {
-                            field.IsStatic = clazz.IsStatic;
-                            field.Visibility = vis;
-                            clazz.Members.Add(field);
-                        }
-                        continue;
-                    case MethodHeadingNode mhn:
-                        var method = GenerateMethod(mhn, ctx);
-                        method.IsStatic = clazz.IsStatic;
-                        method.Visibility = vis;
-                        clazz.Members.Add(method);
-                        continue;
-                    case PropertyNode pnn:
-                        var prop = GenerateProperty(pnn);
-                        prop.IsStatic = clazz.IsStatic;
-                        prop.Visibility = vis;
-                        clazz.Members.Add(prop);
-                        continue;
-                }
-                throw new InvalidOperationException($"{vis} | {clnItm} ?!");
-            }
+	        foreach (var clnItm in cln.ContentListNode.Items)
+	        {
+		        GenerateMember(vis, clnItm, clazz, ctx);
+	        }
+        }
+
+        private static void GenerateMember(Visibility vis, AstNode clnItm, ITypeDef clazz, Context ctx)
+        {
+	        switch (clnItm)
+	        {
+		        case FieldSectionNode fsn:
+			        foreach (var field in GenerateFields(fsn, ctx))
+			        {
+				        field.IsStatic = IsStatic(clazz);
+				        field.Visibility = vis;
+				        clazz.Members.Add(field);
+			        }
+			        return;
+		        case MethodHeadingNode mhn:
+			        var method = GenerateMethod(mhn, ctx);
+			        method.IsStatic = IsStatic(clazz);
+			        method.Visibility = vis;
+			        clazz.Members.Add(method);
+			        return;
+		        case PropertyNode pnn:
+			        var prop = GenerateProperty(pnn);
+			        prop.IsStatic = IsStatic(clazz);
+			        prop.Visibility = vis;
+			        clazz.Members.Add(prop);
+			        return;
+	        }
+	        throw new InvalidOperationException($"{vis} | {clnItm} ?!");
         }
     }
 }
