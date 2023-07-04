@@ -5,6 +5,7 @@ using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
+using Kroki.Roslyn.Util;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;
@@ -38,10 +39,14 @@ namespace Kroki.Core.Code
                     return Read(vsn, ctx);
                 case ForStatementNode fs:
                     return Read(fs, ctx);
+                case ForInStatementNode fs:
+	                return Read(fs, ctx);
                 case IfStatementNode ins:
                     return Read(ins, ctx);
                 case TryFinallyNode tf:
                     return Read(tf, ctx);
+                case TryExceptNode tf:
+	                return Read(tf, ctx);
                 case WithStatementNode ws:
                     return Read(ws, ctx);
                 case CaseStatementNode cs:
@@ -57,8 +62,15 @@ namespace Kroki.Core.Code
                 case Token { Type: TokenType.BeginKeyword }:
                 case Token { Type: TokenType.EndKeyword }:
                     return Arr.Empty<StatementSyntax>();
-            }
-            throw new InvalidOperationException($"{ctx} --> {node} ({node?.ToCode()})");
+
+                // TODO: Handle inherited?!
+                case Token { Type: TokenType.InheritedKeyword }:
+	                return Arr.Empty<StatementSyntax>();
+                // TODO: Handle asm?!
+                case AssemblerStatementNode:
+	                return Arr.Empty<StatementSyntax>();
+			}
+			throw new InvalidOperationException($"{ctx} --> {node} ({node?.ToCode()})");
         }
 
         private static IEnumerable<StatementSyntax> Read(Token token, Context ctx)
@@ -121,6 +133,21 @@ namespace Kroki.Core.Code
             yield return Try(@try, @finally);
         }
 
+        private static IEnumerable<StatementSyntax> Read(TryExceptNode tf, Context ctx)
+        {
+	        var @try = Read(tf.TryStatementListNode, ctx);
+
+	        // TODO tf.ExceptionItemListNode;
+
+	        var claus = new List<Catch>();
+	        if (tf.ElseStatementListNode is { } @else)
+	        {
+		        var @default = Read(@else, ctx);
+		        claus.Add(new Catch(null, null, @default));
+	        }
+	        yield return Try(@try, @catch: claus);
+        }
+
         private static IEnumerable<StatementSyntax> Read(ForStatementNode fs, Context ctx)
         {
             var loop = ReadEx(fs.LoopVariableNode, ctx)!;
@@ -129,6 +156,14 @@ namespace Kroki.Core.Code
             var down = fs.DirectionNode.Type == TokenType.DownToKeyword;
             var s = Read(fs.StatementNode, ctx).ToList();
             yield return For(loop, start, end, down, s);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(ForInStatementNode fs, Context ctx)
+        {
+	        var loop = ReadEx(fs.LoopVariableNode, ctx)!;
+	        var end = ReadEx(fs.ExpressionNode, ctx)!;
+	        var s = Read(fs.StatementNode, ctx).ToList();
+	        yield return ForEach(loop, end, s);
         }
 
         private static IEnumerable<StatementSyntax> Read(UnaryOperationNode bo, Context ctx)

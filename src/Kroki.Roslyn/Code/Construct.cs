@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Kroki.Roslyn.Util;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
@@ -16,12 +17,23 @@ namespace Kroki.Roslyn.Code
         }
 
         public static TryStatementSyntax Try(IEnumerable<StatementSyntax> @try,
-            IEnumerable<StatementSyntax>? @finally = null)
+	        IEnumerable<StatementSyntax>? @finally = null, IEnumerable<Catch>? @catch = null)
         {
-            var block = Block(@try);
-            var catches = List<CatchClauseSyntax>();
-            var fin = @finally == null ? null : FinallyClause(Block(@finally));
-            return TryStatement(block, catches, fin);
+	        var block = Block(@try);
+	        var catches = List<CatchClauseSyntax>();
+	        if (@catch != null)
+		        foreach (var item in @catch)
+		        {
+			        var id = item.Type is { } vt
+				        ? item.Name is { } vn
+					        ? CatchDeclaration(vt, vn)
+					        : CatchDeclaration(vt)
+				        : null;
+			        var ib = Block(item.Code);
+			        catches = catches.Add(CatchClause(id, null, ib));
+		        }
+	        var fin = @finally == null ? null : FinallyClause(Block(@finally));
+	        return TryStatement(block, catches, fin);
         }
 
         public static IfStatementSyntax If(ExpressionSyntax cond, IEnumerable<StatementSyntax> then,
@@ -126,6 +138,13 @@ namespace Kroki.Roslyn.Code
             var inc = SeparatedList(new[] { post });
             var statement = Block(s);
             return ForStatement(declaration, ini, cond, inc, statement);
+        }
+
+        public static ForEachVariableStatementSyntax ForEach(ExpressionSyntax init,
+	        ExpressionSyntax expression, IEnumerable<StatementSyntax> s)
+        {
+	        var statement = Block(s);
+	        return ForEachVariableStatement(init, expression, statement);
         }
     }
 }

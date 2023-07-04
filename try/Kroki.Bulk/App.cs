@@ -25,7 +25,7 @@ namespace Kroki.Bulk
 			
 			var fileCount = files.Length;
 			var i = 0;
-			Delphi.Log = txt => Console.WriteLine($" [{i:D4}/{fileCount:D4}] {txt.Replace(outputFolder, ".").Trim()}");
+			Delphi.Log = txt => Console.WriteLine($" [{(i+1):D4}/{fileCount:D4}] {txt.Replace(outputFolder, ".").Trim()}");
 
 			for (; i < fileCount; i++)
 			{

@@ -53,6 +53,8 @@ namespace Kroki.Core.Code
                     return "ulong";
                 case "ShortInt":
                     return "sbyte";
+                case "DWORD":
+	                return "uint";
                 case "Word":
                     return "ushort";
                 case "Byte":

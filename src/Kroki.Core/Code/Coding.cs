@@ -178,7 +178,7 @@ namespace Kroki.Core.Code
         {
 	        var type = set.TypeNode;
 	        var csType = Mapping.ToCSharp(type);
-	        cla.Base.Add(Express.NameType("Set", csType));
+	        cla.Base.Add(Express.NameType("List", csType));
         }
 
         private static void GenerateRecord(RecordTypeNode rtn, ITypeDef clazz, Context ctx)
