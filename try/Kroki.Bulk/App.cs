@@ -115,11 +115,11 @@ namespace Kroki.Bulk
                             continue;
                         case ".rc":
                             EnsureDir(outDir);
-                            Delphi.ParseRc(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".res":
                             EnsureDir(outDir);
-                            Delphi.ParseRes(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".dfm":
                             EnsureDir(outDir);
@@ -143,43 +143,43 @@ namespace Kroki.Bulk
                             continue;
                         case ".dcr":
                             EnsureDir(outDir);
-                            Delphi.ParseDcr(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".inc":
                             EnsureDir(outDir);
-                            Delphi.ParseInc(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".bpr":
                             EnsureDir(outDir);
-                            Delphi.ParseBpr(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".bpl":
                             EnsureDir(outDir);
-                            Delphi.ParseBpl(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".bpg":
                             EnsureDir(outDir);
-                            Delphi.ParseBpg(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".bpf":
                             EnsureDir(outDir);
-                            Delphi.ParseBpf(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".def":
                             EnsureDir(outDir);
-                            Delphi.ParseDef(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".cbproj":
                             EnsureDir(outDir);
-                            Delphi.ParseCbPrj(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".bdsproj":
                             EnsureDir(outDir);
-                            Delphi.ParseBdsPrj(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
                         case ".manifest":
                             EnsureDir(outDir);
-                            Delphi.ParseManifest(file, outFile);
+                            JustCopy(file, outFile);
                             continue;
 
                         // Binaries and building

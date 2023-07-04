@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using static Kroki.Core.Util.Helpers;
 
 namespace Kroki.Bulk.Read
 {
     internal static class Delphi
     {
-        public static void ParseRes(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParsePas(string file, string outFile)
+	    public static void ParsePas(string file, string outFile)
         {
             outFile = outFile.Replace(".pas", ".cs");
             ParsePascal(file, outFile);
@@ -35,84 +32,42 @@ namespace Kroki.Bulk.Read
             Console.WriteLine($"   * Converted to '{outFile}'...");
         }
 
-        public static void ParseRc(string file, string outFile)
+		public static void ParseDfm(string file, string outFile)
         {
-            // TODO
-        }
-
-        public static void ParseDfm(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseDproj(string file, string outFile)
-        {
-            // TODO
+	        outFile = outFile.Replace(".dfm", ".d.cs");
+	        ParsePascal(file, outFile);
         }
 
         public static void ParseDpr(string file, string outFile)
         {
-            // TODO
-        }
-
-        public static void ParseInc(string file, string outFile)
-        {
-            // TODO
+	        outFile = outFile.Replace(".dpr", ".p.cs");
+	        ParsePascal(file, outFile);
         }
 
         public static void ParseGroupPrj(string file, string outFile)
         {
-            // TODO
-        }
-
-        public static void ParseDcr(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseBpr(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseBpf(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseDef(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseCbPrj(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseBdsPrj(string file, string outFile)
-        {
-            // TODO
-        }
-
-        public static void ParseManifest(string file, string outFile)
-        {
-            // TODO
+	        var gp = Groups.ReadProjects(file);
+	        var path = $"{outFile}.txt";
+	        var lines = new[] { gp.Root, string.Empty }.Concat(gp.Links);
+	        File.WriteAllLines(path, lines, Encoding.UTF8);
         }
 
         public static void ParseDpk(string file, string outFile)
         {
-            // TODO
+	        var gp = Groups.ReadPackage(file);
+	        var path = $"{outFile}.txt";
+	        var lines = new[] { gp.Root, string.Empty }.Concat(gp.Files);
+	        File.WriteAllLines(path, lines, Encoding.UTF8);
         }
 
-        public static void ParseBpg(string file, string outFile)
+        public static void ParseDproj(string file, string outFile)
         {
-            // TODO
-        }
-
-        public static void ParseBpl(string file, string outFile)
-        {
-            // TODO
+	        var prj = Groups.ReadProject(file);
+	        var path = $"{outFile}.txt";
+	        var lines = new[] { prj.Root, string.Empty }.Concat(prj.Links)
+		        .Concat(new[] { string.Empty }).Concat(prj.Sources).Concat(new[] { string.Empty })
+		        .Concat(prj.Meta.Select(p => $"{p.Key} = {p.Value}"));
+	        File.WriteAllLines(path, lines, Encoding.UTF8);
         }
     }
 }
