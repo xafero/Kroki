@@ -26,11 +26,16 @@ namespace Kroki.Roslyn.Model
 
 		public override MemberDeclarationSyntax Create()
 		{
-			var bases = Base.Select(SimpleBaseType).Cast<BaseTypeSyntax>().ToArray();
-			return ClassDeclaration(Identifier(Name))
+			var res = ClassDeclaration(Identifier(Name))
 				.AddModifiers(Visibility.AsModifier(IsStatic))
-				.AddMembers(Members.AsArray())
-				.AddBaseListTypes(bases);
+				.AddMembers(Members.AsArray());
+			if (Base.Count >= 1)
+			{
+				var bases = Base.Select(SimpleBaseType)
+					.Cast<BaseTypeSyntax>().ToArray();
+				res = res.AddBaseListTypes(bases);
+			}
+			return res;
 		}
 	}
 }
