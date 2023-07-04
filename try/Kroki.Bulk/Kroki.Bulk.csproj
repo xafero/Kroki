@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Kroki.Core\Kroki.Core.csproj" />
+    <ProjectReference Include="..\..\src\Kroki.MSBuild\Kroki.MSBuild.csproj" />
   </ItemGroup>
 
 </Project>

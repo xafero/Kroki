@@ -36,7 +36,7 @@ namespace Kroki.Bulk.Read
 				.SelectMany(p => p.Value.Split(';').Select(q => q.TrimEnd('\\')))
 				.ToArray();
 			var src = ResolveFull(file, codeSrc, out var dir,
-				new[] { ".pas", ".dpr" }, new[] { ".cs", ".p.cs" });
+				new[] { ".pas", ".dpr" }, new[] { ".cs", ".cs" });
 			var paths = ResolveFull(file, dccPathA, out _,
 				new string[] { }, new string[] { });
 			return new OneProj(dir, versionMeta, src, paths);

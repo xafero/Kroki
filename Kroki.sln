@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Roslyn", "src\Kroki.R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.Demo", "try\Kroki.Demo\Kroki.Demo.csproj", "{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kroki.MSBuild", "src\Kroki.MSBuild\Kroki.MSBuild.csproj", "{BDC15068-ABC3-466B-BBED-23B46BCCADE6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -73,6 +75,10 @@ Global
 		{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDC15068-ABC3-466B-BBED-23B46BCCADE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDC15068-ABC3-466B-BBED-23B46BCCADE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDC15068-ABC3-466B-BBED-23B46BCCADE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDC15068-ABC3-466B-BBED-23B46BCCADE6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +93,7 @@ Global
 		{72CB1E7F-4E3E-46BF-B092-CFF4D9DABD33} = {A70E05D8-32FD-4A25-8751-BC8D0DD1FCB2}
 		{DBDA53F0-9D37-45D1-8B1D-B52312E3D306} = {5902BEC8-6C3D-4D73-8512-6A30BB1F0518}
 		{F42D6D2F-A04B-45BE-8943-A73BC7A0C33A} = {A70E05D8-32FD-4A25-8751-BC8D0DD1FCB2}
+		{BDC15068-ABC3-466B-BBED-23B46BCCADE6} = {5902BEC8-6C3D-4D73-8512-6A30BB1F0518}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {6D98FC31-042C-400C-9149-50E8761BB766}
