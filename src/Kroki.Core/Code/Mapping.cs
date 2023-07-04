@@ -175,8 +175,10 @@ namespace Kroki.Core.Code
                     return BinaryMode.In;
                 case TokenType.IsKeyword:
                     return BinaryMode.Is;
+                case TokenType.AsKeyword:
+	                return BinaryMode.As;
             }
-            throw new InvalidOperationException(opToken.ToString());
+			throw new InvalidOperationException(opToken.ToString());
         }
 
         public static UnaryMode ToUnary(Token opToken)

@@ -40,6 +40,8 @@
 
         Is,
 
+        As,
+
         LessEq
     }
 }

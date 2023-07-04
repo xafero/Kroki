@@ -128,8 +128,11 @@ namespace Kroki.Roslyn.Code
                 case BinaryMode.Is:
                     op = SyntaxKind.IsExpression;
                     break;
+                case BinaryMode.As:
+	                op = SyntaxKind.AsExpression;
+	                break;
 
-                case BinaryMode.In:
+				case BinaryMode.In:
                     return Invoke(left, nameof(BinaryMode.In), right);
                 case BinaryMode.Dot:
                     return Access(left, right);

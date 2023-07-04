@@ -87,23 +87,32 @@ namespace Kroki.Roslyn.Code
 
         private static StatementSyntax Combine(ExpressionSyntax prefix, CSharpSyntaxNode statement)
         {
-            switch (statement)
-            {
-                case ExpressionStatementSyntax ess:
-                    return Combine(prefix, ess.Expression);
-                case AssignmentExpressionSyntax aes:
-                    var p = GetSingle(prefix);
-                    var l = aes.Left;
-                    if (l is MemberAccessExpressionSyntax && statement is AssignmentExpressionSyntax aas)
-                        return aas.AsStat();
-                    var upd = aes.WithLeft(Access(p, l));
-                    return upd.AsStat();
-                case IfStatementSyntax iss:
-                    return iss;
-                case SwitchStatementSyntax iss:
-                    return iss;
-            }
-            throw new InvalidOperationException($"{prefix} / {statement} ({statement.GetType()}) ?");
+	        switch (statement)
+	        {
+		        case ExpressionStatementSyntax ess:
+			        return Combine(prefix, ess.Expression);
+		        case AssignmentExpressionSyntax aes:
+			        var p = GetSingle(prefix);
+			        var l = aes.Left;
+			        if (l is MemberAccessExpressionSyntax && statement is AssignmentExpressionSyntax aas)
+				        return aas.AsStat();
+			        var upd = aes.WithLeft(Access(p, l));
+			        return upd.AsStat();
+
+		        case IfStatementSyntax iss:
+			        return iss;
+		        case SwitchStatementSyntax iss:
+			        return iss;
+		        case TryStatementSyntax tri:
+			        return tri;
+		        case ForStatementSyntax fsi:
+			        return fsi;
+                case InvocationExpressionSyntax ies:
+	                return ies.AsStat();
+                case BlockSyntax bs:
+	                return bs;
+	        }
+	        throw new InvalidOperationException($"{prefix} / {statement} ({statement.GetType()}) ?");
         }
 
         public static ForStatementSyntax For(string loop, string start, string end, bool isDown,
