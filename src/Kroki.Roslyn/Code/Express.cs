@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Kroki.Roslyn.API;
+using Kroki.Roslyn.Model;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -169,6 +170,16 @@ namespace Kroki.Roslyn.Code
             var lds = LocalDeclarationStatement(VariableDeclaration(ParseTypeName(type))
                 .AddVariables(VariableDeclarator(name).WithInitializer(EqualsValueClause(AsValue(value)))));
             return isConst ? lds.AddModifiers(Visibility.None.AsModifier(isConst: isConst)) : lds;
+        }
+
+        public static LocalFunctionStatementSyntax Method(MethodObj m)
+        {
+	        var rt = ParseTypeName(m.ReturnType);
+	        var method = LocalFunctionStatement(rt, m.Name)
+		        .AddModifiers(System.Array.Empty<SyntaxToken>())
+		        .AddParameterListParameters(m.Params.AsArray());
+	        method = method.AddBodyStatements(m.Statements.ToArray());
+	        return method;
         }
 
         public static InvocationExpressionSyntax Invoke(string owner, string method, IEnumerable<object> a)

@@ -40,7 +40,9 @@ namespace Kroki.Core.Code
                     return Read(vsn, ctx);
                 case TypeSectionNode vsn:
 	                return Read(vsn, ctx);
-                case ForStatementNode fs:
+                case MethodImplementationNode min:
+	                return Read(min, ctx);
+				case ForStatementNode fs:
                     return Read(fs, ctx);
                 case ForInStatementNode fs:
 	                return Read(fs, ctx);
@@ -242,6 +244,16 @@ namespace Kroki.Core.Code
                 var vt = field.Value ?? Mapping.GetDefault(ft);
                 yield return Assign(ft, field.Name, vt);
             }
+        }
+
+        private static IEnumerable<StatementSyntax> Read(MethodImplementationNode min, Context ctx)
+        {
+	        var mi = min.MethodHeadingNode;
+	        var method = mi.GenerateMethod(ctx);
+	        method.IsAbstract = false;
+	        foreach (var stat in Read(min.FancyBlockNode, ctx))
+		        method.Statements.Add(stat);
+	        yield return Method(method);
         }
     }
 }
