@@ -80,7 +80,13 @@ namespace Kroki.Core
 
         public override void VisitMethodImplementationNode(MethodImplementationNode node)
         {
-            var ctx = Context.By(null, RootNsp);
+	        if (node.ParentNode.ParentNode.ParentNode is MethodImplementationNode)
+	        {
+		        base.VisitMethodImplementationNode(node);
+                return;
+			}
+
+	        var ctx = Context.By(null, RootNsp);
             var method = node.MethodHeadingNode.GenerateMethod(ctx);
 
             ClassObj clazz;
