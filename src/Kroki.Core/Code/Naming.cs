@@ -48,6 +48,8 @@ namespace Kroki.Core.Code
                     return to.Text;
                 case BinaryOperationNode bo:
                     return GetText(bo);
+                case UnaryOperationNode uo:
+	                return GetText(uo);
                 case ParameterizedNode pn:
                     return GetText(pn.LeftNode);
                 case ParenthesizedExpressionNode en:
@@ -63,6 +65,12 @@ namespace Kroki.Core.Code
             var left = bo.LeftNode.GetText();
             var right = bo.RightNode.GetText();
             return Names.CombineName(left, right)!;
+        }
+
+        private static string GetText(UnaryOperationNode bo)
+        {
+	        var left = bo.OperandNode.GetText();
+	        return left;
         }
     }
 }

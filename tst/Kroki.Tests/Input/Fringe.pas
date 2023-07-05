@@ -192,5 +192,36 @@ begin
   Result := False;
 end;
 
-end.
+procedure SetEditTabVisibility(btn: Integer; isOn: Boolean);
+begin
+  WriteLn(btn, isOn);
+end;
 
+procedure SetEditTabsVisibility(AItemIndex, AItemCount: Integer; scbEditTab,scbAddTab: DWORD);
+
+  procedure BC(AEnabled: Boolean; AButton: Integer);
+  begin
+    if AEnabled then
+      SetEditTabVisibility(AButton, True)
+    else
+      SetEditTabVisibility(AButton, False);
+  end;
+
+begin
+  if ((AItemCount = 0) or (AItemIndex = -1)) then begin
+    BC(False, scbEditTab);
+
+    if (AItemCount = 0) then begin
+      WriteLn(scbAddTab);
+    end;
+
+    BC(True, scbAddTab);
+
+  end
+  else begin
+    BC(True, scbAddTab);
+    BC(True, scbEditTab);
+  end;
+end;
+
+end.

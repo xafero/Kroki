@@ -4,6 +4,10 @@
     {
         Not = 0,
 
-        Minus
+        Minus,
+
+        Inherit,
+
+        At
     }
 }

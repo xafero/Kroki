@@ -127,6 +127,8 @@ namespace Kroki.Core.Code
                     return Visibility.Private;
                 case "protected":
                     return Visibility.Protected;
+                case "published":
+	                return Visibility.Internal;
                 case "public":
                     return Visibility.Public;
             }
@@ -189,6 +191,10 @@ namespace Kroki.Core.Code
                     return UnaryMode.Not;
                 case TokenType.MinusSign:
                     return UnaryMode.Minus;
+                case TokenType.InheritedKeyword:
+	                return UnaryMode.Inherit;
+                case TokenType.AtSign:
+	                return UnaryMode.At;
             }
             throw new InvalidOperationException(opToken.ToString());
         }

@@ -35,7 +35,10 @@ namespace Kroki.Roslyn.Code
             => LiteralExpression(b ? SyntaxKind.TrueLiteralExpression : SyntaxKind.FalseLiteralExpression);
 
         public static ExpressionSyntax AsNumberValue(string text)
-            => LiteralExpression(SyntaxKind.NumericLiteralExpression, ParseToken(text));
+        {
+	        var txt = ParseToken(text.TrimStart('$'));
+	        return LiteralExpression(SyntaxKind.NumericLiteralExpression, txt);
+        }
 
         public static ExpressionSyntax AsTextValue(string s)
         {
@@ -66,6 +69,12 @@ namespace Kroki.Roslyn.Code
                 case UnaryMode.Minus:
                     op = SyntaxKind.UnaryMinusExpression;
                     break;
+                case UnaryMode.Inherit:
+                    // TODO: Ignore "inherit" for now
+	                return left;
+                case UnaryMode.At:
+	                // TODO: Ignore "@" for now
+	                return left;
                 default:
                     throw new InvalidOperationException($"{bm} ?!");
             }
