@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Kroki.Core.Code;
 using Kroki.Core.Model;
 using Microsoft.CodeAnalysis.Text;
 
@@ -77,7 +76,7 @@ namespace Kroki.Core.Util
             }
             catch (Exception parseEx)
             {
-	            error = new TranslateError(path, code, parseEx);
+	            error = new TranslateError(path, code, parseEx, hintName);
 	            processed = $"/* {parseEx} */";
             }
 			var genText = genCode + processed + Environment.NewLine;

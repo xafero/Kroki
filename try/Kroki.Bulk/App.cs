@@ -260,6 +260,7 @@ namespace Kroki.Bulk
 			statExisting = 0;
 			statCopied = 0;
 			statFailed = 0;
+			statParsed = 0;
 
 			Console.WriteLine();
 			Console.WriteLine("Done.");
