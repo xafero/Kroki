@@ -7,6 +7,11 @@ namespace Kroki.Bulk
 {
 	internal static class App
 	{
+		private static uint statExisting;
+		private static uint statCopied;
+		private static uint statIgnored;
+		private static uint statFailed;
+
 		internal static int Run(Options opt)
 		{
 			if (opt.InputDir is not { } inputDir || !Directory.Exists(inputDir))
@@ -31,16 +36,31 @@ namespace Kroki.Bulk
 			{
 				var file = files[i];
 				if (file.Contains($"{sep}.git{sep}"))
+				{
+					statIgnored++;
 					continue;
+				}
 				if (file.Contains($"{sep}bin{sep}Debug{sep}") || file.Contains($"{sep}bin{sep}x64{sep}") ||
 				    file.Contains($"{sep}obj{sep}Debug{sep}") || file.Contains($"{sep}obj{sep}x64{sep}"))
+				{
+					statIgnored++;
 					continue;
+				}
 				if (file.Contains($"{sep}.vs{sep}"))
+				{
+					statIgnored++;
 					continue;
+				}
 				if (file.Contains($"{sep}obj{sep}"))
+				{
+					statIgnored++;
 					continue;
+				}
 				if (file.Contains($"{sep}Debug{sep}"))
+				{
+					statIgnored++;
 					continue;
+				}
 
 				var relPath = file[inputFolder.Length..].TrimStart(sep);
 				var outFile = Path.Combine(outputFolder, relPath);
@@ -119,17 +139,17 @@ namespace Kroki.Bulk
 							EnsureDir(outDir);
 							Delphi.ParsePas(file, outFile);
 							continue;
-						case ".rc":
-							EnsureDir(outDir);
-							JustCopy(file, outFile);
-							continue;
-						case ".res":
-							EnsureDir(outDir);
-							JustCopy(file, outFile);
-							continue;
 						case ".dfm":
 							EnsureDir(outDir);
 							Delphi.ParseDfm(file, outFile);
+							continue;
+						case ".dpr":
+							EnsureDir(outDir);
+							Delphi.ParseDpr(file, outFile);
+							continue;
+						case ".dpk":
+							EnsureDir(outDir);
+							Delphi.ParseDpk(file, outFile);
 							continue;
 						case ".dproj":
 							EnsureDir(outDir);
@@ -139,13 +159,15 @@ namespace Kroki.Bulk
 							EnsureDir(outDir);
 							Delphi.ParseGroupPrj(file, outFile);
 							continue;
-						case ".dpr":
+
+						// Ignore these for parsing
+						case ".rc":
 							EnsureDir(outDir);
-							Delphi.ParseDpr(file, outFile);
+							JustCopy(file, outFile);
 							continue;
-						case ".dpk":
+						case ".res":
 							EnsureDir(outDir);
-							Delphi.ParseDpk(file, outFile);
+							JustCopy(file, outFile);
 							continue;
 						case ".dcr":
 							EnsureDir(outDir);
@@ -207,15 +229,30 @@ namespace Kroki.Bulk
 						case ".filters":
 						case ".1":
 						case ".2":
+							statIgnored++;
 							continue;
 					}
 				}
 				catch (Exception e)
 				{
 					errMsg = e.Message.Split(" at ", 2).FirstOrDefault()?.Trim();
+					statFailed++;
 				}
 				Console.Error.WriteLine($" * {relPath} --> {errMsg}!");
 			}
+
+			Console.WriteLine();
+			var statParsed = fileCount - statIgnored - statExisting - statCopied - statFailed;
+			Console.WriteLine($"Ignored files  = {statIgnored}");
+			Console.WriteLine($"Existing files = {statExisting}");
+			Console.WriteLine($"Copied files   = {statCopied}");
+			Console.WriteLine($"Failed files   = {statFailed}");
+			Console.WriteLine($"Parsed files   = {statParsed}");
+			Console.WriteLine($"All files      = {fileCount}");
+			statIgnored = 0;
+			statExisting = 0;
+			statCopied = 0;
+			statFailed = 0;
 
 			Console.WriteLine();
 			Console.WriteLine("Done.");
@@ -231,7 +268,11 @@ namespace Kroki.Bulk
 		private static void JustCopy(string inFile, string outFile)
 		{
 			if (File.Exists(outFile))
+			{
+				statExisting++;
 				return;
+			}
+			statCopied++;
 			File.Copy(inFile, outFile, overwrite: true);
 		}
 	}
