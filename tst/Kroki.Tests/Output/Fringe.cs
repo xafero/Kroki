@@ -211,5 +211,41 @@ namespace Kroki.Example
 
             return false;
         }
+
+        public static void SetEditTabVisibility(int btn, bool isOn)
+        {
+            Console.WriteLine(btn, isOn);
+        }
+
+        public static void SetEditTabsVisibility(int AItemIndex, int AItemCount, uint scbEditTab, uint scbAddTab)
+        {
+   	        void BC(bool AEnabled, uint AButton)
+	        {
+		        if (AEnabled)
+		        {
+			        SetEditTabVisibility(AButton, true);
+		        }
+		        else
+		        {
+			        SetEditTabVisibility(AButton, false);
+		        }
+	        }
+
+            if (((AItemCount == 0) || (AItemIndex == -1)))
+            {
+                BC(false, scbEditTab);
+                if ((AItemCount == 0))
+                {
+                    Console.WriteLine(scbAddTab);
+                }
+
+                BC(true, scbAddTab);
+            }
+            else
+            {
+                BC(true, scbAddTab);
+                BC(true, scbEditTab);
+            }
+        }
     }
 }
