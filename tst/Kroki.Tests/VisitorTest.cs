@@ -39,6 +39,12 @@ namespace Kroki.Tests
         }
 
         [Fact]
+        public void ConvertHierarchy()
+        {
+	        ParseAndCheck("Hierarchy");
+        }
+
+        [Fact]
         public void ConvertSyntax()
         {
             ParseAndCheck("Syntax");
