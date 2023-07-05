@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Kroki.Bulk.Read;
+using Kroki.Core.Model;
 
 namespace Kroki.Bulk
 {
@@ -242,7 +243,17 @@ namespace Kroki.Bulk
 				}
 				catch (Exception ex)
 				{
-					var e = ex.InnerException!;
+					if (ex is TranslateError err)
+					{
+						var destDir = Path.GetDirectoryName(outFile)!;
+						var origExt = Path.GetExtension(err.Path);
+						var origName = Path.GetFileName(err.Target)
+							.Replace(origExt, string.Empty) + origExt;
+						var destName = Path.Combine(destDir, origName);
+						using var writer = File.CreateText(destName);
+						err.Code.Write(writer);
+					}
+					var e = ex.InnerException ?? ex;
 					errMsg = e.Message.Split(" at ", 2).FirstOrDefault()?.Trim();
 					statFailed++;
 				}
