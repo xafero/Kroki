@@ -35,7 +35,7 @@ namespace Kroki.Generator
                     if (sourceText == null)
                         continue;
 
-                    var (hintName, genText) = Translate(someFile.Path, sourceText, rootSpace);
+                    var (hintName, genText, _) = Translate(someFile.Path, sourceText, rootSpace);
                     context.AddSource(hintName, SourceText.From(genText, Encoding.UTF8));
                 }
             }

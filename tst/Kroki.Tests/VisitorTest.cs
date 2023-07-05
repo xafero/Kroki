@@ -69,7 +69,7 @@ namespace Kroki.Tests
             var tmpFile = Path.Combine(tmpDir, $"{name}.cs");
 
             var inSrc = ReadSource(inFile);
-            var (_, translated) = Translate(inFile, inSrc, includeDate: false);
+            var (_, translated, _) = Translate(inFile, inSrc, includeDate: false);
             File.WriteAllText(tmpFile, translated);
 
             var expected = File.ReadAllText(outFile, Encoding.UTF8);
