@@ -3,6 +3,7 @@ using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Code;
+using Kroki.Core.Model;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;

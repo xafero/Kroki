@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
+using Kroki.Core.Model;
 using Kroki.Core.Util;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;

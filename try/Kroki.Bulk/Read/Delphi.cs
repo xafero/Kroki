@@ -29,7 +29,9 @@ namespace Kroki.Bulk.Read
 
 			var src = ReadSource(file);
 
-			var (_, csCode) = Translate(file, src, catchError: false);
+			var (_, csCode, err) = Translate(file, src);
+			if (err != null)
+				throw err;
 			code.Write(csCode);
 
 			Log!.Invoke($"   * Converted to '{outFile}'...");

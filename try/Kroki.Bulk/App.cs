@@ -240,8 +240,9 @@ namespace Kroki.Bulk
 							continue;
 					}
 				}
-				catch (Exception e)
+				catch (Exception ex)
 				{
+					var e = ex.InnerException!;
 					errMsg = e.Message.Split(" at ", 2).FirstOrDefault()?.Trim();
 					statFailed++;
 				}

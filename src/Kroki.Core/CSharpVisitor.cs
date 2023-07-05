@@ -4,6 +4,7 @@ using DGrok.Framework;
 using System.Linq;
 using DGrok.DelphiNodes;
 using Kroki.Core.Code;
+using Kroki.Core.Model;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;

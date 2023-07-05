@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Kroki.Core.Code;
+using Kroki.Core.Model;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Kroki.Core.Util
@@ -52,8 +54,8 @@ namespace Kroki.Core.Util
                 code.WriteLine();
         }
 
-        public static (string file, string content) Translate(string path, SourceText code,
-            string rSpace = "Kroki.Example", bool includeDate = true, bool catchError = true)
+        public static Translated Translate(string path, SourceText code,
+            string rSpace = "Kroki.Example", bool includeDate = true)
         {
             var simpleName = Path.GetFileName(path);
             var hintName = $"{simpleName}.cs";
@@ -67,19 +69,19 @@ namespace Kroki.Core.Util
                 genCode.AppendLine();
             }
 
+            TranslateError? error = null;
             string processed;
             try
             {
-                processed = DelphiParser.Parse(simpleName, code, rSpace);
+	            processed = DelphiParser.Parse(simpleName, code, rSpace);
             }
             catch (Exception parseEx)
             {
-	            if (!catchError)
-		            throw;
-                processed = $"/* {parseEx} */";
+	            error = new TranslateError(path, code, parseEx);
+	            processed = $"/* {parseEx} */";
             }
-            var genText = genCode + processed + Environment.NewLine;
-            return (hintName, genText);
+			var genText = genCode + processed + Environment.NewLine;
+			return new Translated(hintName, genText, error);
         }
 
         public static SourceText ReadSource(string file)
