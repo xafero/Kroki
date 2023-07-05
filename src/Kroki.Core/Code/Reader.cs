@@ -53,6 +53,8 @@ namespace Kroki.Core.Code
                     return Read(cs, ctx);
                 case RepeatStatementNode rs:
                     return Read(rs, ctx);
+                case RaiseStatementNode rss:
+	                return Read(rss, ctx);
                 case WhileStatementNode ws:
                     return Read(ws, ctx);
                 case ParameterizedNode pn:
@@ -98,6 +100,12 @@ namespace Kroki.Core.Code
             var cond = ReadEx(ws.ConditionNode, ctx)!;
             var then = Read(ws.StatementListNode, ctx);
             yield return Repeat(cond, then);
+        }
+
+        private static IEnumerable<StatementSyntax> Read(RaiseStatementNode rs, Context ctx)
+        {
+	        var follow = ReadEx(rs.ExceptionNode, ctx)!;
+	        yield return Throw(follow);
         }
 
         private static IEnumerable<StatementSyntax> Read(CaseStatementNode ws, Context ctx)

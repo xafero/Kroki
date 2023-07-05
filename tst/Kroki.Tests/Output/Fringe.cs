@@ -88,6 +88,22 @@ namespace Kroki.Example
 
     public static class fringe
     {
+        public static bool IsFilterConnected()
+        {
+            return true;
+        }
+
+        public static void Comp(bool FGrabsSamples)
+        {
+            if (FGrabsSamples)
+            {
+                if (!IsFilterConnected())
+                {
+                    throw Exception.Create("Sample grabber not connected");
+                }
+            }
+        }
+
         public static void DoFor(List<String> Items, long width, long height)
         {
             string menuItem = default;

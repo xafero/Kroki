@@ -43,6 +43,22 @@ type
 
 implementation
 
+function IsFilterConnected(): Boolean;
+begin
+  Result := True;
+end;
+
+procedure Comp(FGrabsSamples: Boolean);
+begin
+  if FGrabsSamples then
+  begin
+    if not IsFilterConnected() then
+    begin
+      raise Exception.Create('Sample grabber not connected');
+    end;
+  end;
+end;
+
 {Class} Function TA.GetA : Integer;
 begin
   Result:=-1;

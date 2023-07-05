@@ -60,6 +60,8 @@ namespace Kroki.Roslyn.Code
         public static ContinueStatementSyntax Continue() => ContinueStatement();
         public static ReturnStatementSyntax Return(ExpressionSyntax? value = null) => ReturnStatement(value);
 
+        public static ThrowStatementSyntax Throw(ExpressionSyntax? value = null) => ThrowStatement(value);
+
         public static SwitchStatementSyntax Switch(ExpressionSyntax cond, (ExpressionSyntax v,
             IEnumerable<StatementSyntax> c)[] tuples)
         {
