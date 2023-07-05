@@ -10,40 +10,10 @@ namespace Kroki.Example
         private bool FDetailsVisible;
     }
 
-    public class TGeometry
-    {
-        public abstract string MyName();
-    }
-
-    public class TGeometryMaker
-    {
-        private TGeometryClass FCurrentGeometryClass;
-        public TGeometry GetNextGeometry()
-        {
-            return CurrentGeometryClass.Create;
-        }
-
-        public TGeometryClass CurrentGeometryClass { get; set; }
-    }
-
-    public class TRectangle : TGeometry
-    {
-        public string MyName()
-        {
-            return "Some rectangle!";
-        }
-    }
-
-    public class TCircle : TGeometry
-    {
-        public string MyName()
-        {
-            return "I am the one and only circle.";
-        }
-    }
-
     public static class hierarch
     {
+        public static Type TDebugDialogClass = typeof(TDebugDialog);
+        public static Type TGeometryClass = typeof(TGeometry);
         public static void Button1Click(object Sender, List<String> Lines)
         {
             TGeometry Geo = default;
@@ -77,6 +47,38 @@ namespace Kroki.Example
                     Free();
                 }
             }
+        }
+    }
+
+    public class TGeometry
+    {
+        public abstract string MyName();
+    }
+
+    public class TGeometryMaker
+    {
+        private TGeometryClass FCurrentGeometryClass;
+        public TGeometry GetNextGeometry()
+        {
+            return CurrentGeometryClass.Create;
+        }
+
+        public TGeometryClass CurrentGeometryClass { get; set; }
+    }
+
+    public class TRectangle : TGeometry
+    {
+        public string MyName()
+        {
+            return "Some rectangle!";
+        }
+    }
+
+    public class TCircle : TGeometry
+    {
+        public string MyName()
+        {
+            return "I am the one and only circle.";
         }
     }
 }

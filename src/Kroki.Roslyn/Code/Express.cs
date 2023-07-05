@@ -273,6 +273,12 @@ namespace Kroki.Roslyn.Code
             return PrefixUnaryExpression(op, value);
         }
 
+        public static TypeOfExpressionSyntax TypeOf(ExpressionSyntax value)
+        {
+	        var type = (TypeSyntax)value;
+	        return TypeOfExpression(type);
+        }
+
         public static GenericNameSyntax NameType(string name, params string[] subNames)
         {
 	        var type = GenericName(name);

@@ -179,6 +179,18 @@ namespace Kroki.Core
         {
 	        var ctx = Context.By(null, RootNsp);
 	        var raw = Coding.GenerateClass(node, ctx);
+
+	        if (raw is ClassOfObj coo)
+	        {
+		        var unit = GetUnitClass();
+		        var uf = new FieldObj(coo.Name)
+		        {
+			        FieldType = "Type", Value = Express.TypeOf(coo.Target!), IsStatic = true
+		        };
+		        unit.Members.Add(uf);
+		        return;
+	        }
+
 	        var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
 
 	        var inPro = node.ParentNode.ParentNode.ParentNode.ParentNode is ProgramNode;

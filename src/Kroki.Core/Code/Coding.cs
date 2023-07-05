@@ -135,6 +135,10 @@ namespace Kroki.Core.Code
 			        var set = new ClassObj(name);
 			        GenerateSetOf(son, set, ctx);
 			        return set;
+				case ClassOfNode con:
+					var @ref = new ClassOfObj(name);
+					GenerateClassOf(con, @ref, ctx);
+					return @ref;
 		        case PointerTypeNode:
 			        var prt = new StructObj(name);
 			        // TODO Handle pointer?!
@@ -167,6 +171,12 @@ namespace Kroki.Core.Code
 	        del.Params.AddRange(method.Params);
 	        del.ReturnType = method.ReturnType;
 	        del.Visibility = method.Visibility;
+        }
+
+        private static void GenerateClassOf(ClassOfNode con, ClassOfObj @ref, Context ctx)
+        {
+	        var type = Extended.ReadEx(con.TypeNode, ctx);
+	        @ref.Target = type;
         }
 
         private static void GenerateArray(ArrayTypeNode atn, ClassObj cla, Context _)
