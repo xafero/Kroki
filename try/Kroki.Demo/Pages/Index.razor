@@ -60,13 +60,16 @@
 		var nsp = GetType().Namespace!;
 		try
 		{
-			var (dstName,translated) = Translate(inFile, inSrc,
-				includeDate: true, rSpace: nsp, catchError: false);
+			var (dstName,translated, err) = Translate(inFile, inSrc,
+				includeDate: true, rSpace: nsp);
+			if (err != null)
+				throw err;
 			_destName = dstName;
 			_codeOutput = translated.Trim();
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
+			var ex = e.InnerException ?? e;
 			_codeOutput = $"{ErrPrefix}[{ex.GetType().Name}] {ex.Message}";
 		}
 	}
