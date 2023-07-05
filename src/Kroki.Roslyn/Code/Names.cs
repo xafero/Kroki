@@ -1,6 +1,4 @@
 using System;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Roslyn.Code
 {
