@@ -162,5 +162,54 @@ namespace Kroki.Example
         public static void DoAssmbl()
         {
         }
+
+        public delegate hResult TSHGetImageList(int iImageList, TGUID riid);
+        public static string ImageListExtraLarge()
+        {
+            THandle hInstShell32 = default;
+            TSHGetImageList SHGetImageList = default;
+            const int SHIL_LARGE = 0;
+            const int SHIL_SMALL = 1;
+            const int SHIL_EXTRALARGE = 2;
+            const string IID_IImageList = "{46EB5926-582E-4017-9FDF-E8998DAA0950}";
+            hInstShell32 = LoadLibrary("Shell32.dll");
+            if (hInstShell32 != 0)
+            {
+                try
+                {
+                    Console.WriteLine(hInstShell32, SHIL_LARGE, SHIL_EXTRALARGE, SHIL_SMALL, SHGetImageList(0, IID_IImageList));
+                }
+                finally
+                {
+                    FreeLibrary(hInstShell32);
+                }
+            }
+
+            return "?";
+        }
+
+        public delegate bool TWTSRegisterSessionNotification(int Wnd, uint dwFlags);
+        public static bool RegisterSessionNotification(int Wnd, uint dwFlags)
+        {
+            THandle hWTSapi32dll = default;
+            TWTSRegisterSessionNotification WTSRegisterSessionNotification = default;
+            hWTSapi32dll = LoadLibrary("Wtsapi32.dll");
+            if (hWTSapi32dll > 0)
+            {
+                try
+                {
+                    return WTSRegisterSessionNotification(Wnd, dwFlags);
+                }
+                finally
+                {
+                    if (hWTSapi32dll > 0)
+                    {
+                        FreeLibrary(hWTSAPI32DLL);
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -170,22 +170,26 @@ namespace Kroki.Core
 
         public override void VisitTypeDeclNode(TypeDeclNode node)
         {
-            var ctx = Context.By(null, RootNsp);
-            var raw = Coding.GenerateClass(node, ctx);
-            var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
+	        var ctx = Context.By(null, RootNsp);
+	        var raw = Coding.GenerateClass(node, ctx);
+	        var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
 
-            var inPro = node.ParentNode.ParentNode.ParentNode.ParentNode is ProgramNode;
-            if (inPro)
-            {
-                var pro = RootNsp.Members.OfType<ClassObj>().First();
-                pro.Members.Add(clazz);
-            }
-            else
-            {
-                RootNsp.Members.Add(clazz);
-            }
+	        var inPro = node.ParentNode.ParentNode.ParentNode.ParentNode is ProgramNode;
+	        if (inPro)
+	        {
+		        var pro = RootNsp.Members.OfType<ClassObj>().First();
+		        pro.Members.Add(clazz);
+	        }
+	        else
+	        {
+		        var inMethod = node.ParentNode.ParentNode.ParentNode.ParentNode.ParentNode is MethodImplementationNode;
+		        if (!inMethod)
+		        {
+			        RootNsp.Members.Add(clazz);
+		        }
+	        }
 
-            base.VisitTypeDeclNode(node);
+	        base.VisitTypeDeclNode(node);
         }
     }
 }

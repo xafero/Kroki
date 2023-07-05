@@ -150,5 +150,47 @@ begin
   end;
 end;
 
+function ImageListExtraLarge: String;
+type
+  TSHGetImageList = function (iImageList: integer; const riid: TGUID): hResult; stdcall;
+var
+  hInstShell32: THandle;
+  SHGetImageList: TSHGetImageList;
+const
+  SHIL_LARGE= 0; //32X32
+  SHIL_SMALL= 1; //16X16
+  SHIL_EXTRALARGE= 2;
+  IID_IImageList: TGUID= '{46EB5926-582E-4017-9FDF-E8998DAA0950}';
+begin
+  hInstShell32:= LoadLibrary('Shell32.dll');
+  if hInstShell32<> 0 then
+  try
+    WriteLn(hInstShell32, SHIL_LARGE, SHIL_EXTRALARGE, SHIL_SMALL, SHGetImageList(0,IID_IImageList));
+  finally
+    FreeLibrary(hInstShell32);
+  end;
+  Result:= '?';
+end;
+
+function RegisterSessionNotification(Wnd: Integer; dwFlags: Cardinal) : Boolean;
+type
+  TWTSRegisterSessionNotification = function(Wnd: Integer; dwFlags: DWORD): Boolean; stdcall;
+var
+  hWTSapi32dll : THandle;
+  WTSRegisterSessionNotification : TWTSRegisterSessionNotification;
+begin
+  hWTSapi32dll := LoadLibrary('Wtsapi32.dll');
+  if hWTSapi32dll > 0 then
+  begin
+    try
+      Result:= WTSRegisterSessionNotification(Wnd, dwFlags);
+    finally
+      if hWTSapi32dll > 0 then
+        FreeLibrary(hWTSAPI32DLL);
+    end;
+  end;
+  Result := False;
+end;
+
 end.
 

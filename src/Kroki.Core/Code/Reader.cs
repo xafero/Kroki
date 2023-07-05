@@ -11,6 +11,7 @@ using static Kroki.Roslyn.Code.Express;
 using static Kroki.Core.Util.Extended;
 using static Kroki.Roslyn.Code.Construct;
 using Arr = System.Array;
+using Kroki.Roslyn.API;
 
 namespace Kroki.Core.Code
 {
@@ -37,6 +38,8 @@ namespace Kroki.Core.Code
                     return Read(vsn, ctx);
                 case ConstSectionNode vsn:
                     return Read(vsn, ctx);
+                case TypeSectionNode vsn:
+	                return Read(vsn, ctx);
                 case ForStatementNode fs:
                     return Read(fs, ctx);
                 case ForInStatementNode fs:
@@ -216,6 +219,19 @@ namespace Kroki.Core.Code
                 var fv = field.Value!;
                 yield return Assign(ft, field.Name, fv, isConst: true);
             }
+        }
+
+        private static IEnumerable<StatementSyntax> Read(TypeSectionNode dvs, Context ctx)
+        {
+	        var types = dvs.TypeListNode.Items;
+	        var scope = ctx.Scope!;
+	        foreach (var type in types.Cast<TypeDeclNode>())
+	        {
+		        var embedded = Coding.GenerateClass(type, ctx);
+		        var conv = (CompileObj<MemberDeclarationSyntax>)embedded;
+		        scope.Members.Add(conv);
+	        }
+	        yield break;
         }
 
         private static IEnumerable<StatementSyntax> Read(VarSectionNode dvs, Context ctx)
