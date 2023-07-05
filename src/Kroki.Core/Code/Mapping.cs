@@ -179,7 +179,11 @@ namespace Kroki.Core.Code
                     return BinaryMode.Is;
                 case TokenType.AsKeyword:
 	                return BinaryMode.As;
-            }
+                case TokenType.ShrKeyword:
+	                return BinaryMode.Shr;
+                case TokenType.ShlKeyword:
+	                return BinaryMode.Shl;
+			}
 			throw new InvalidOperationException(opToken.ToString());
         }
 

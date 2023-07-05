@@ -1,4 +1,6 @@
 using System;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Kroki.Roslyn.Code
 {
@@ -19,6 +21,16 @@ namespace Kroki.Roslyn.Code
             if (string.IsNullOrWhiteSpace(name))
                 return null;
             return string.IsNullOrWhiteSpace(owner) ? name : owner + NameSep + name;
+        }
+
+        public static string CleanName(string name)
+        {
+	        switch (name)
+	        {
+		        case "new": return "@new";
+                case "lock": return "@lock";
+	        }
+	        return name;
         }
     }
 }

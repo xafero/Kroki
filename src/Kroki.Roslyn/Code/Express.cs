@@ -37,8 +37,18 @@ namespace Kroki.Roslyn.Code
 
         public static ExpressionSyntax AsNumberValue(string text)
         {
-	        var txt = ParseToken(text.TrimStart('$'));
-	        return LiteralExpression(SyntaxKind.NumericLiteralExpression, txt);
+	        var txt = text;
+	        if (txt.StartsWith("$"))
+	        {
+		        txt = Convert.ToInt64(txt.TrimStart('$'), 16).ToString();
+	        }
+	        var token = ParseToken(txt.Trim('-'));
+	        var r = LiteralExpression(SyntaxKind.NumericLiteralExpression, token);
+	        if (txt.StartsWith("-"))
+	        {
+		        return PrefixUnaryExpression(SyntaxKind.UnaryMinusExpression, r);
+	        }
+	        return r;
         }
 
         public static ExpressionSyntax AsTextValue(string s)
@@ -141,6 +151,12 @@ namespace Kroki.Roslyn.Code
                 case BinaryMode.As:
 	                op = SyntaxKind.AsExpression;
 	                break;
+                case BinaryMode.Shr:
+	                op = SyntaxKind.RightShiftExpression;
+                    break;
+                case BinaryMode.Shl:
+	                op = SyntaxKind.LeftShiftExpression;
+                    break;
 
 				case BinaryMode.In:
                     return Invoke(left, nameof(BinaryMode.In), right);

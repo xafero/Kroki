@@ -1,4 +1,5 @@
 ﻿using Kroki.Roslyn.API;
+using Kroki.Roslyn.Code;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -16,7 +17,7 @@ namespace Kroki.Roslyn.Model
         public string Name { get; }
 
         public override ParameterSyntax Create()
-            => Parameter(ParseToken(Name))
+            => Parameter(ParseToken(Names.CleanName(Name)))
                 .WithType(ParseTypeName(Type));
     }
 }

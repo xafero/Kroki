@@ -42,6 +42,10 @@
 
         As,
 
+        Shr,
+
+        Shl,
+
         LessEq
     }
 }
