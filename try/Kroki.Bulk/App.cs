@@ -11,6 +11,7 @@ namespace Kroki.Bulk
 		private static uint statCopied;
 		private static uint statIgnored;
 		private static uint statFailed;
+		private static uint statParsed;
 
 		internal static int Run(Options opt)
 		{
@@ -138,26 +139,32 @@ namespace Kroki.Bulk
 						case ".pas":
 							EnsureDir(outDir);
 							Delphi.ParsePas(file, outFile);
+							statParsed++;
 							continue;
 						case ".dfm":
 							EnsureDir(outDir);
 							Delphi.ParseDfm(file, outFile);
+							statParsed++;
 							continue;
 						case ".dpr":
 							EnsureDir(outDir);
 							Delphi.ParseDpr(file, outFile);
+							statParsed++;
 							continue;
 						case ".dpk":
 							EnsureDir(outDir);
 							Delphi.ParseDpk(file, outFile);
+							statParsed++;
 							continue;
 						case ".dproj":
 							EnsureDir(outDir);
 							Delphi.ParseDproj(file, outFile);
+							statParsed++;
 							continue;
 						case ".groupproj":
 							EnsureDir(outDir);
 							Delphi.ParseGroupPrj(file, outFile);
+							statParsed++;
 							continue;
 
 						// Ignore these for parsing
@@ -242,7 +249,6 @@ namespace Kroki.Bulk
 			}
 
 			Console.WriteLine();
-			var statParsed = fileCount - statIgnored - statExisting - statCopied - statFailed;
 			Console.WriteLine($"Ignored files  = {statIgnored}");
 			Console.WriteLine($"Existing files = {statExisting}");
 			Console.WriteLine($"Copied files   = {statCopied}");
