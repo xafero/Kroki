@@ -139,6 +139,10 @@ namespace Kroki.Core.Code
 					var @ref = new ClassOfObj(name);
 					GenerateClassOf(con, @ref, ctx);
 					return @ref;
+				case BinaryOperationNode bon:
+					var rng = new RangeOfVal(name);
+					GenerateRangeOf(bon, rng, ctx);
+					return rng;
 		        case PointerTypeNode:
 			        var prt = new StructObj(name);
 			        // TODO Handle pointer?!
@@ -177,6 +181,14 @@ namespace Kroki.Core.Code
         {
 	        var type = Extended.ReadEx(con.TypeNode, ctx);
 	        @ref.Target = type;
+        }
+
+        private static void GenerateRangeOf(BinaryOperationNode bon, RangeOfVal rng, Context ctx)
+        {
+	        var left = Extended.ReadEx(bon.LeftNode, ctx);
+	        var right = Extended.ReadEx(bon.RightNode, ctx);
+	        rng.Start = left;
+	        rng.End = right;
         }
 
         private static void GenerateArray(ArrayTypeNode atn, ClassObj cla, Context _)

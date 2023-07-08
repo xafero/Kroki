@@ -279,6 +279,11 @@ namespace Kroki.Roslyn.Code
 	        return TypeOfExpression(type);
         }
 
+        public static RangeExpressionSyntax Range(ExpressionSyntax left, ExpressionSyntax right)
+        {
+	        return RangeExpression(left, right);
+        }
+
         public static GenericNameSyntax NameType(string name, params string[] subNames)
         {
 	        var type = GenericName(name);

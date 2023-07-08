@@ -190,6 +190,16 @@ namespace Kroki.Core
 		        unit.Members.Add(uf);
 		        return;
 	        }
+	        if (raw is RangeOfVal rov)
+	        {
+		        var unit = GetUnitClass();
+		        var uf = new FieldObj(rov.Name)
+		        {
+			        FieldType = "Range", Value = Express.Range(rov.Start!, rov.End!), IsStatic = true
+		        };
+		        unit.Members.Add(uf);
+		        return;
+	        }
 
 	        var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
 
