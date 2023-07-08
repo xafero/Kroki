@@ -202,6 +202,8 @@ namespace Kroki.Core.Code
                     return UnaryMode.Not;
                 case TokenType.MinusSign:
                     return UnaryMode.Minus;
+                case TokenType.PlusSign:
+	                return UnaryMode.Plus;
                 case TokenType.InheritedKeyword:
 	                return UnaryMode.Inherit;
                 case TokenType.AtSign:

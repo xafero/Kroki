@@ -109,7 +109,11 @@ namespace Kroki.Roslyn.Code
 			        return tri;
 		        case ForStatementSyntax fsi:
 			        return fsi;
-                case InvocationExpressionSyntax ies:
+                case ForEachStatementSyntax fei:
+	                return fei;
+                case ReturnStatementSyntax rsi:
+	                return rsi;
+		        case InvocationExpressionSyntax ies:
 	                return ies.AsStat();
                 case BlockSyntax bs:
 	                return bs;
