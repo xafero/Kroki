@@ -57,6 +57,8 @@ namespace Kroki.Core.Code
 	                return "uint";
                 case "Word":
                     return "ushort";
+                case "Pointer":
+	                return "IntPtr";
                 case "Byte":
                     return "byte";
                 case "SmallInt":
