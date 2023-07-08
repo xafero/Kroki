@@ -38,6 +38,12 @@ namespace Kroki.Tests
             ParseAndCheck("SmForm");
         }
 
+        [Fact(Skip = "Ignore DFM until parser is fixed!")]
+        public void ConvertSplashForm()
+        {
+	        ParseAndCheck("SplashForm", ext: "dfm");
+        }
+
         [Fact]
         public void ConvertHierarchy()
         {
@@ -48,6 +54,12 @@ namespace Kroki.Tests
         public void ConvertSyntax()
         {
             ParseAndCheck("Syntax");
+        }
+
+        [Fact]
+        public void ConvertOneForm()
+        {
+	        ParseAndCheck("OneForm");
         }
 
         [Fact]
