@@ -7,6 +7,7 @@ using Kroki.Core.Model;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
+using Token = DGrok.Framework.Token;
 
 namespace Kroki.Core.Util
 {
@@ -26,6 +27,8 @@ namespace Kroki.Core.Util
                     return AsNumberValue(to.Text);
                 case Token { Type: TokenType.NilKeyword }:
                     return NullValue();
+                case Token { Type: TokenType.StringKeyword } to:
+	                return AsTypeCast(to, ctx);
                 case DelimitedItemNode<AstNode> da:
                     return ReadEx(da.ItemNode, ctx);
                 case BinaryOperationNode bo:
@@ -92,6 +95,18 @@ namespace Kroki.Core.Util
         {
             var it = lna.Items.Select(i => ReadEx(i, ctx)).ToArray();
             return Array(it);
+        }
+
+        public const string CastPrefix = "___";
+
+        private static ExpressionSyntax AsTypeCast(Token to, Context _)
+        {
+	        var type = Mapping.ToCSharp(to);
+	        var name = CastPrefix + type;
+	        var tmp = Mapping.Replace(name)!.Value;
+	        var (owner, method) = tmp;
+	        var item = Access(Name(owner), Name(method));
+	        return item;
         }
 
         private static ExpressionSyntax ReadEx(SetLiteralNode ln, Context ctx)

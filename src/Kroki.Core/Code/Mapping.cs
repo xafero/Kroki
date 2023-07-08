@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using DGrok.DelphiNodes;
 using DGrok.Framework;
+using Kroki.Core.Util;
 using Kroki.Roslyn.API;
+using static System.StringSplitOptions;
 
 namespace Kroki.Core.Code
 {
@@ -216,6 +219,12 @@ namespace Kroki.Core.Code
         {
             string? owner = null;
             string? method = null;
+            var cast = text.Split(new[] { Extended.CastPrefix }, 2, None);
+            if (cast.Length == 2)
+            {
+	            owner = "Convert";
+	            method = $"To{Naming.ToTitle(cast.Last())}";
+            }
             switch (text.ToLower())
             {
                 case "read":

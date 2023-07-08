@@ -71,7 +71,7 @@ namespace Kroki.Example
         };
         public bool D3DXVector2Equal(TD3DXVector2 v1, TD3DXVector2 v2)
         {
-            Console.WriteLine((v1), (v2));
+            Console.WriteLine(Convert.ToString(v1), Convert.ToString(v2));
             return true;
         }
     }
@@ -141,7 +141,7 @@ namespace Kroki.Example
         public static bool ParseThat(char c)
         {
             string tmp = default;
-            tmp = (c);
+            tmp = Convert.ToString(c);
             Console.WriteLine(tmp);
             return c.In(new[] { "a".."z", " ", "A".."Z" });
         }

@@ -46,6 +46,8 @@ namespace Kroki.Core.Code
                     return to.Text;
                 case Token { Type: TokenType.Number } to:
                     return to.Text;
+                case Token { Type: TokenType.StringKeyword } to:
+	                return to.Text;
                 case BinaryOperationNode bo:
                     return GetText(bo);
                 case UnaryOperationNode uo:
@@ -71,6 +73,11 @@ namespace Kroki.Core.Code
         {
 	        var left = bo.OperandNode.GetText();
 	        return left;
+        }
+
+        public static string ToTitle(string text)
+        {
+	        return text[..1].ToUpper() + text[1..];
         }
     }
 }
