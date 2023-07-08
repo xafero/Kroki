@@ -183,6 +183,8 @@ namespace Kroki.Core.Code
 	                return BinaryMode.Shr;
                 case TokenType.ShlKeyword:
 	                return BinaryMode.Shl;
+                case TokenType.DotDot:
+	                return BinaryMode.Range;
 			}
 			throw new InvalidOperationException(opToken.ToString());
         }

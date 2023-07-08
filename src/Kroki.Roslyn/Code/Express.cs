@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Model;
@@ -21,7 +22,8 @@ namespace Kroki.Roslyn.Code
                 case ExpressionSyntax e: return e;
                 case bool b: return AsBoolValue(b);
                 case int i: return AsNumberValue(i.ToString());
-                case string s: return AsTextValue(s);
+                case double d: return AsNumberValue(d.ToString(CultureInfo.InvariantCulture));
+				case string s: return AsTextValue(s);
             }
             throw new InvalidOperationException($"{obj} ({obj.GetType()})");
         }
@@ -158,7 +160,9 @@ namespace Kroki.Roslyn.Code
 	                op = SyntaxKind.LeftShiftExpression;
                     break;
 
-				case BinaryMode.In:
+                case BinaryMode.Range:
+	                return Range(left, right);
+                case BinaryMode.In:
                     return Invoke(left, nameof(BinaryMode.In), right);
                 case BinaryMode.Dot:
                     return Access(left, right);

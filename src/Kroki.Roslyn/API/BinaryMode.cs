@@ -46,6 +46,8 @@
 
         Shl,
 
-        LessEq
+        Range,
+
+		LessEq
     }
 }
