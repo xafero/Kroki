@@ -36,11 +36,15 @@ namespace Kroki.Core.Util
                     return ReadEx(po, ctx);
                 case ParameterizedNode pn:
                     return ReadEx(pn, ctx);
+                case RecordFieldConstantNode rc:
+	                return ReadEx(rc, ctx);
                 case SetLiteralNode ln:
                     return ReadEx(ln, ctx);
                 case ListNode<DelimitedItemNode<AstNode>> lna:
                     return ReadEx(lna, ctx);
-                case PointerDereferenceNode pn:
+                case ConstantListNode cln:
+	                return ReadEx(cln, ctx);
+				case PointerDereferenceNode pn:
                     return ReadEx(pn.OperandNode, ctx); // TODO Handle pointer
             }
             throw new InvalidOperationException($"{node} ?!");
@@ -64,6 +68,14 @@ namespace Kroki.Core.Util
             var args = prm.Items.Select(p => ReadEx(p, ctx)!.Arg()).ToArray();
             var item = Invoke(left, args);
             return item;
+        }
+
+        private static ExpressionSyntax ReadEx(RecordFieldConstantNode fc, Context ctx)
+        {
+	        var name = ReadEx(fc.NameNode, ctx)!;
+	        var value = ReadEx(fc.ValueNode, ctx)!;
+	        var item = Assign(name, value);
+	        return item;
         }
 
         internal static ExpressionSyntax Patch(AstNode pn, Context ctx)
@@ -92,6 +104,13 @@ namespace Kroki.Core.Util
         {
             var core = ReadEx(po.ExpressionNode, ctx)!;
             return Paren(core);
+        }
+
+        private static ExpressionSyntax ReadEx(ConstantListNode cln, Context ctx)
+        {
+	        var values = cln.ItemListNode.Items
+		        .Select(i => ReadEx(i, ctx)!).ToArray();
+	        return ImplicitCreate(values);
         }
 
         public static ExpressionSyntax ReadEx(BinaryOperationNode bo, Context ctx)

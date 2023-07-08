@@ -271,6 +271,14 @@ namespace Kroki.Roslyn.Code
             return ParenthesizedExpression(value);
         }
 
+        public static ImplicitObjectCreationExpressionSyntax ImplicitCreate(IEnumerable<ExpressionSyntax> v)
+        {
+	        var args = ArgumentList();
+	        var expr = SeparatedList(v);
+	        var init = InitializerExpression(SyntaxKind.ObjectInitializerExpression, expr);
+	        return ImplicitObjectCreationExpression(args, init);
+        }
+
         public static PrefixUnaryExpressionSyntax Not(ExpressionSyntax value)
         {
             const SyntaxKind op = SyntaxKind.LogicalNotExpression;

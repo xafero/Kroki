@@ -143,6 +143,10 @@ namespace Kroki.Core.Code
 					var rng = new RangeOfVal(name);
 					GenerateRangeOf(bon, rng, ctx);
 					return rng;
+				case Token to:
+					var tal = new TypeAlias(name);
+					GenerateAlias(to, tal, ctx);
+					return tal;
 		        case PointerTypeNode:
 			        var prt = new StructObj(name);
 			        // TODO Handle pointer?!
@@ -189,6 +193,12 @@ namespace Kroki.Core.Code
 	        var right = Extended.ReadEx(bon.RightNode, ctx);
 	        rng.Start = left;
 	        rng.End = right;
+        }
+
+        private static void GenerateAlias(Token to, TypeAlias tal, Context ctx)
+        {
+	        var text = Extended.ReadEx(to, ctx);
+	        tal.Target = text;
         }
 
         private static void GenerateArray(ArrayTypeNode atn, ClassObj cla, Context _)
@@ -280,6 +290,25 @@ namespace Kroki.Core.Code
 				        clazz.Members.Add(field);
 			        }
 			        return;
+				case ConstSectionNode csn:
+					foreach (var field in GenerateFields(csn, ctx))
+					{
+						CompileObj<MemberDeclarationSyntax> constRes;
+						if (field.Value is BaseObjectCreationExpressionSyntax)
+						{
+							field.IsReadOnly = true;
+							field.IsStatic = true;
+							field.Visibility = vis;
+							constRes = field;
+						}
+						else
+						{
+							var cof = new ConstObj(field) { Visibility = vis };
+							constRes = cof;
+						}
+						clazz.Members.Add(constRes);
+					}
+					return;
 		        case MethodHeadingNode mhn:
 			        var method = GenerateMethod(mhn, ctx);
 			        method.IsStatic = IsStatic(clazz);

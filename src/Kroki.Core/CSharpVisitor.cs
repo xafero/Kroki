@@ -200,6 +200,13 @@ namespace Kroki.Core
 		        unit.Members.Add(uf);
 		        return;
 	        }
+	        if (raw is TypeAlias tal)
+	        {
+		        var nsp = (NamespaceObj)ctx.Scope!;
+		        var aliasTxt = $"{tal.Name} = {tal.Target!}";
+		        nsp.Usings.Add(aliasTxt);
+                return;
+	        }
 
 	        var clazz = (CompileObj<MemberDeclarationSyntax>)raw;
 
