@@ -38,13 +38,19 @@ namespace Kroki.Tests
             ParseAndCheck("SmForm");
         }
 
-        [Fact(Skip = "Ignore DFM until parser is fixed!")]
+        [Fact]
         public void ConvertSplashForm()
         {
 	        ParseAndCheck("SplashForm", ext: "dfm");
         }
 
         [Fact]
+        public void ConvertSettingsWnd()
+        {
+	        ParseAndCheck("SettingsWnd", ext: "dfm");
+		}
+
+		[Fact]
         public void ConvertHierarchy()
         {
 	        ParseAndCheck("Hierarchy");
