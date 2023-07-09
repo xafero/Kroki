@@ -20,6 +20,7 @@ namespace Kroki.Roslyn.Model
 			IsRump = false;
 			Name = name;
 			Params = new List<CompileObj<ParameterSyntax>>();
+			Attributes = new List<CompileObj<AttributeListSyntax>>();
 			Statements = new List<StatementSyntax>();
 		}
 
@@ -28,6 +29,7 @@ namespace Kroki.Roslyn.Model
 		public string ReturnType { get; set; }
 		public string Name { get; set; }
 		public List<CompileObj<ParameterSyntax>> Params { get; }
+		public List<CompileObj<AttributeListSyntax>> Attributes { get; }
 		public bool IsAbstract { get; set; }
 		public bool IsRump { get; set; }
 		public List<StatementSyntax> Statements { get; }
@@ -38,6 +40,7 @@ namespace Kroki.Roslyn.Model
 				.AddModifiers(IsRump
 					? Array.Empty<SyntaxToken>()
 					: Visibility.AsModifier(IsStatic, isAbstract: IsAbstract))
+				.AddAttributeLists(Attributes.AsArray())
 				.AddParameterListParameters(Params.AsArray());
 			method = IsAbstract
 				? method.WithSemicolonToken(Token(SyntaxKind.SemicolonToken))
