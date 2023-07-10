@@ -10,7 +10,6 @@ using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using static Kroki.Core.Code.Reader;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using A = System.Array;
 
 namespace Kroki.Core
 {
@@ -67,35 +66,13 @@ namespace Kroki.Core
 
         public override void VisitObjectNode(ObjectNode node)
         {
-	        const string sl = "Create until here";
-	        const string rl = "Now finish the layout";
 	        if (node.ParentNode == null)
 	        {
-		        var name = node.ObjectNameNode.GetText();
-		        var (fd, fb) = Prebuilt.CreateForm(name);
-		        RootNsp.Usings.Add("System.Windows.Forms");
-		        RootNsp.Members.Add(fb);
-		        RootNsp.Members.Add(fd);
-		        var dm = fd.Members.OfType<MethodObj>().Last();
-		        var ds = dm.Statements;
-		        ds.Add(Construct.InvokeS("SuspendLayout").Comment(sl));
-		        ds.Add(Construct.InvokeS("ResumeLayout", Express.AsBoolValue(false)
-			        .Arg()).Comment(rl));
-		        ds.Add(Construct.InvokeS("PerformLayout"));
+		        Designer.CreateBase(RootNsp, node);
 	        }
 	        else
 	        {
-		        var name = node.ObjectNameNode.GetText();
-		        var type = node.ObjectTypeNode.GetText();
-		        var design = RootNsp.Members.OfType<ClassObj>().Last();
-		        var dm = design.Members.OfType<MethodObj>().Last();
-		        var cStr = Express.Create(type, A.Empty<ArgumentSyntax>());
-		        dm.Statements.Insert(1, Express.Assign(name, cStr).AsStat());
-		        var field = new FieldObj(name)
-		        {
-			        FieldType = type, Visibility = Visibility.Private
-		        };
-		        design.Members.Add(field);
+		        Designer.CreateChild(RootNsp, node);
 	        }
 
 	        base.VisitObjectNode(node);
