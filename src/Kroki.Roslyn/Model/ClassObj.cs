@@ -23,11 +23,12 @@ namespace Kroki.Roslyn.Model
 		public string Name { get; }
 		public List<CompileObj<MemberDeclarationSyntax>> Members { get; }
 		public List<TypeSyntax> Base { get; }
+		public bool IsPartial { get; set; }
 
 		public override MemberDeclarationSyntax Create()
 		{
 			var res = ClassDeclaration(Identifier(Name))
-				.AddModifiers(Visibility.AsModifier(IsStatic))
+				.AddModifiers(Visibility.AsModifier(IsStatic, isPartial: IsPartial))
 				.AddMembers(Members.AsArray());
 			if (Base.Count >= 1)
 			{

@@ -223,6 +223,13 @@ namespace Kroki.Roslyn.Code
 
         public static ExpressionSyntax Name(string name) => IdentifierName(name);
 
+        public static ExpressionSyntax Create(string typeName, IEnumerable<ArgumentSyntax> args)
+        {
+	        var type = ParseTypeName(typeName);
+	        return ObjectCreationExpression(type)
+		        .WithArgumentList(ArgumentList(SeparatedList(args)));
+        }
+
         public static ExpressionSyntax Access(ExpressionSyntax left, ExpressionSyntax right)
         {
             return MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, left, ToName(right));

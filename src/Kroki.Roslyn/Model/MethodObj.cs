@@ -33,13 +33,18 @@ namespace Kroki.Roslyn.Model
 		public bool IsAbstract { get; set; }
 		public bool IsRump { get; set; }
 		public List<StatementSyntax> Statements { get; }
+		public bool IsOverride { get; set; }
+		public bool IsConstructor { get; set; }
 
 		public override MemberDeclarationSyntax Create()
 		{
-			var method = MethodDeclaration(ParseTypeName(ReturnType), Name)
+			BaseMethodDeclarationSyntax bm = IsConstructor
+				? ConstructorDeclaration(Name)
+				: MethodDeclaration(ParseTypeName(ReturnType), Name);
+			var method = bm
 				.AddModifiers(IsRump
 					? Array.Empty<SyntaxToken>()
-					: Visibility.AsModifier(IsStatic, isAbstract: IsAbstract))
+					: Visibility.AsModifier(IsStatic, isAbstract: IsAbstract, isOverride: IsOverride))
 				.AddAttributeLists(Attributes.AsArray())
 				.AddParameterListParameters(Params.AsArray());
 			method = IsAbstract
