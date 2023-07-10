@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Kroki.Roslyn.Util;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
@@ -162,6 +163,22 @@ namespace Kroki.Roslyn.Code
 	        var id = init.GetFirstToken();
 	        var statement = Block(s);
 	        return ForEachStatement(vt, id, expression, statement);
+        }
+
+        public static StatementSyntax InvokeS(string name, params ArgumentSyntax[] args)
+        {
+	        var exp = Invoke(Name(name), args);
+	        return exp.AsStat();
+        }
+
+        public static StatementSyntax Comment(this StatementSyntax statement,
+	        string text, bool trail = false)
+        {
+	        var plain = $"// {text}";
+	        var comment = SyntaxFactory.Comment(plain);
+	        return trail
+		        ? statement.WithTrailingTrivia(comment)
+		        : statement.WithLeadingTrivia(comment);
         }
     }
 }
