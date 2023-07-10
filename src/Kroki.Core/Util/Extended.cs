@@ -4,6 +4,7 @@ using DGrok.DelphiNodes;
 using DGrok.Framework;
 using Kroki.Core.Code;
 using Kroki.Core.Model;
+using Kroki.Roslyn.API;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Kroki.Roslyn.Code.Express;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -27,6 +28,8 @@ namespace Kroki.Core.Util
                     return AsNumberValue(to.Text);
                 case Token { Type: TokenType.NilKeyword }:
                     return NullValue();
+                case Token { Type: TokenType.NotEqual }:
+	                return NullValue();
                 case Token { Type: TokenType.StringKeyword } to:
 	                return AsTypeCast(to, ctx);
                 case DelimitedItemNode<AstNode> da:
@@ -45,6 +48,10 @@ namespace Kroki.Core.Util
                     return ReadEx(ln, ctx);
                 case ListNode<DelimitedItemNode<AstNode>> lna:
                     return ReadEx(lna, ctx);
+                case ListNode<Token> tka:
+	                return ReadEx(tka, ctx);
+                case ListNode<AstNode> aka:
+	                return ReadEx(aka, ctx);
                 case ConstantListNode cln:
 	                return ReadEx(cln, ctx);
 				case PointerDereferenceNode pn:
@@ -89,6 +96,45 @@ namespace Kroki.Core.Util
                 left = Access(Name(p.owner), Name(p.method));
             }
             return left;
+        }
+
+        private static ExpressionSyntax ReadEx(ListNode<AstNode> aka, Context ctx)
+        {
+	        if (aka.Items.Count == 0)
+		        return NullValue();
+
+	        // TODO
+	        return NullValue();
+        }
+
+        private static ExpressionSyntax ReadEx(ListNode<Token> tka, Context ctx)
+        {
+	        if (tka.Items.Count == 0)
+		        return NullValue();
+
+	        if (tka.Items[0] is { Type: TokenType.Identifier } to)
+	        {
+		        var res = ReadEx(to, ctx);
+		        BinaryMode? lastOp = null;
+		        var i = 1;
+		        while (i < tka.Items.Count)
+		        {
+			        var current = tka.Items[i];
+			        if (current.Type != TokenType.Identifier)
+			        {
+				        lastOp = Mapping.ToBinary(current);
+				        i++;
+				        continue;
+			        }
+			        var right = ReadEx(current, ctx);
+			        res = Binary(lastOp!.Value, res, right);
+			        i++;
+		        }
+		        return res;
+	        }
+
+	        // TODO
+	        return NullValue();
         }
 
         private static ExpressionSyntax ReadEx(ListNode<DelimitedItemNode<AstNode>> lna, Context ctx)

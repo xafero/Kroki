@@ -172,13 +172,41 @@ namespace Kroki.Roslyn.Code
         }
 
         public static StatementSyntax Comment(this StatementSyntax statement,
-	        string text, bool trail = false)
+	        bool trail, params string[] text)
         {
-	        var plain = $"// {text}";
-	        var comment = SyntaxFactory.Comment(plain);
+	        var comment = text.SelectMany(t =>
+		        new[] { SyntaxFactory.Comment($"// {t}"), CarriageReturnLineFeed });
 	        return trail
-		        ? statement.WithTrailingTrivia(comment)
-		        : statement.WithLeadingTrivia(comment);
+		        ? statement.WithTrailingTrivia(comment.ToArray())
+		        : statement.WithLeadingTrivia(comment.ToArray());
+        }
+
+        public static int FindComment(this IEnumerable<StatementSyntax> syntax,
+	        string term, bool trail = false)
+        {
+	        var i = 0;
+	        foreach (var stat in syntax)
+	        {
+		        SyntaxTriviaList? trivia = null;
+		        if (!trail && stat.HasLeadingTrivia)
+		        {
+			        trivia = stat.GetLeadingTrivia();
+		        }
+		        else if (trail && stat.HasTrailingTrivia)
+		        {
+			        trivia = stat.GetTrailingTrivia();
+		        }
+		        if (trivia?.Count >= 1)
+		        {
+			        var nonEmpty = trivia.Value
+				        .Select(t => t.ToString())
+				        .Where(t => !string.IsNullOrWhiteSpace(t));
+			        if (nonEmpty.Any(n => n.Contains(term)))
+				        return i;
+		        }
+		        i++;
+	        }
+	        return -1;
         }
     }
 }

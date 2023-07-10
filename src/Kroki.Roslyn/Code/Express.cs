@@ -60,11 +60,6 @@ namespace Kroki.Roslyn.Code
             return IdentifierName(s);
         }
 
-        public static SimpleNameSyntax ToName(ExpressionSyntax syntax)
-        {
-            return (SimpleNameSyntax)syntax;
-        }
-
         public static ExpressionSyntax Array(IEnumerable<ExpressionSyntax?> values)
         {
             var v = SeparatedList(values.Select(v => v ?? NullValue()));
@@ -232,7 +227,18 @@ namespace Kroki.Roslyn.Code
 
         public static ExpressionSyntax Access(ExpressionSyntax left, ExpressionSyntax right)
         {
-            return MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, left, ToName(right));
+	        var l = left;
+	        if (right is not SimpleNameSyntax r)
+	        {
+		        if (right is MemberAccessExpressionSyntax rm)
+		        {
+			        l = Access(left, rm.Expression);
+			        r = rm.Name;
+		        }
+		        else
+			        throw new InvalidOperationException($"{right} ?!");
+	        }
+	        return MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, l, r);
         }
 
         public static ExpressionSyntax Invoke(ExpressionSyntax owner, string method, ExpressionSyntax arg)

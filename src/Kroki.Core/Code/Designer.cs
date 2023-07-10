@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using DGrok.DelphiNodes;
+using DGrok.Framework;
+using Kroki.Core.Model;
 using Kroki.Roslyn.API;
 using Kroki.Roslyn.Code;
 using Kroki.Roslyn.Model;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Kroki.Core.Util.Extended;
 using static Kroki.Roslyn.Code.Construct;
 using static Kroki.Roslyn.Code.Express;
 using static Kroki.Roslyn.Code.Prebuilt;
@@ -25,9 +29,11 @@ namespace Kroki.Core.Code
 			nsp.Members.Add(fd);
 			var dm = fd.Members.OfType<MethodObj>().Last();
 			var ds = dm.Statements;
-			ds.Add(InvokeS("SuspendLayout").Comment(Sl));
-			ds.Add(InvokeS("ResumeLayout", AsBoolValue(false).Arg()).Comment(Rl));
+			ds.Add(InvokeS("SuspendLayout").Comment(false, Sl));
+			ds.Add(InvokeS("ResumeLayout", AsBoolValue(false).Arg()).Comment(false, Rl));
 			ds.Add(InvokeS("PerformLayout"));
+
+			Generate(dm, node.PropertiesNode.Items, name);
 		}
 
 		public static void CreateChild(NamespaceObj nsp, ObjectNode node)
@@ -43,6 +49,29 @@ namespace Kroki.Core.Code
 				FieldType = type, Visibility = Visibility.Private
 			};
 			design.Members.Add(field);
+
+			Generate(dm, node.PropertiesNode.Items, name, Name(name));
+		}
+
+		private static void Generate(MethodObj method, IEnumerable<AstNode> properties,
+			string meta, ExpressionSyntax? prefix = null)
+		{
+			var idx = method.Statements.FindComment(Sl) + 1;
+			var ctx = Context.By(method, null);
+			var i = 0;
+			foreach (var property in properties.OfType<PropertyDataNode>())
+			{
+				var key = ReadEx(property.NameNode, ctx)!;
+				if (prefix != null)
+					key = Access(prefix, key);
+				var val = ReadEx(property.ValueNode, ctx)!;
+				var stat = Assign(key, val);
+				var line = stat.AsStat();
+				if (i == 0)
+					line = line.Comment(false, "", meta, "");
+				method.Statements.Insert(idx++, line);
+				i++;
+			}
 		}
 	}
 }
