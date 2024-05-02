@@ -2,16 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
 
     <IsRoslynComponent>true</IsRoslynComponent>
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+  </PropertyGroup>
 
+  <PropertyGroup>
     <PackageId>Kroki.Generator</PackageId>
-    <Title>Kroki</Title>
+    <Title>Kroki.Generator</Title>
     <Authors>xafero</Authors>
     <PackageTags>kroki delphi pascal generator source-generator</PackageTags>
     <Description>This package provides an incremental generator that can create classes from Delphi (Object Pascal) code.</Description>
@@ -21,7 +23,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <Version>0.0.1</Version>
+    <Version>0.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>    

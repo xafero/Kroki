@@ -6,11 +6,30 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <PackageId>Kroki.Runtime</PackageId>
+    <Title>Kroki.Runtime</Title>
+    <Authors>xafero</Authors>
+    <PackageTags>kroki delphi pascal runtime</PackageTags>
+    <Description>This package provides an runtime parts for converted Delphi (Object Pascal) code.</Description>
+    <PackageProjectUrl>https://github.com/xafero/Kroki</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/xafero/Kroki</RepositoryUrl>
+    <PackageReleaseNotes>https://github.com/xafero/Kroki/releases</PackageReleaseNotes>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Version>0.0.2</Version>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="PolySharp" Version="1.14.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
 
 </Project>
