@@ -53,7 +53,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: All NuGet packages
-        path: main/src/nupkg
+        path: main/nupkg
 
     - name: Create demo
       working-directory: main
