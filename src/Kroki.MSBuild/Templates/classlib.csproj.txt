@@ -3,7 +3,7 @@
   <PropertyGroup>
 {{ for item in meta }}    <{{ item.key }}>{{ item.value }}</{{ item.key }}>
 {{ end }}
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
