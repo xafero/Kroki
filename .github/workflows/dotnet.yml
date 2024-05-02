@@ -29,17 +29,31 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
+    - name: Restore workloads
+      working-directory: main
+      run: dotnet workload install wasm-tools
+
     - name: Restore dependencies
       working-directory: main
       run: dotnet restore
 
     - name: Build
       working-directory: main
-      run: dotnet build --no-restore
+      run: dotnet build -c Release --no-restore
 
     - name: Test
       working-directory: main
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test -c Release --no-build --verbosity normal
+
+    - name: Pack
+      working-directory: main
+      run: dotnet pack -c Release --no-build -o nupkg
+
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: All NuGet packages
+        path: src/nupkg
 
     - name: Create demo
       working-directory: main
