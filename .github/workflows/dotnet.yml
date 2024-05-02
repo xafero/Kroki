@@ -1,4 +1,4 @@
-name: .NET
+name: .NET Build
 
 on:
   push:
@@ -9,25 +9,25 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+    timeout-minutes: 15
 
     steps:
     - name: Checkout main
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         path: main
 
     - name: Checkout tools
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: xafero/dgrok
         path: dgrok
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 8.0.x
 
     - name: Restore dependencies
       working-directory: main
@@ -46,7 +46,7 @@ jobs:
       run: dotnet publish try/Kroki.Demo -c:Release -o:publish -p:GHPages=true
 
     - name: Deploy demo
-      uses: peaceiris/actions-gh-pages@v3
+      uses: peaceiris/actions-gh-pages@v4
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: main/publish/wwwroot
@@ -57,7 +57,7 @@ jobs:
       run: ./main/build.sh
 
     - name: Release
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: pub/*.*
